@@ -77,18 +77,22 @@ class PasarelaController extends Controller
     }
 
     function handleDatagram($datagram) {
-        parsear($datagram);
+        $imei = parsear($datagram);
+        echo "imei del vehiculo $imei". PHP_EOL;
+        self::findPatente($imei);
     }
 
     private function findPatente($imeiPosicion=0) {
         $connection = \Yii::$app->db;
         $vehiculo = Vehiculo::findOne(['imei' => $imeiPosicion]);		
-        print_r($vehiculo->patente);
-        echo '<pre>';
-            var_dump($vehiculo->patente);
-        echo '</pre>';
+        echo "patente: $vehiculo->patente". PHP_EOL;
 
-        return 0;
+        // print_r($vehiculo->patente);
+        // echo '<pre>';
+        //     var_dump($vehiculo->patente);
+        // echo '</pre>';
+
+        // return 0;
     }
 
     public function actionTest(){

@@ -9,9 +9,11 @@
 function parsear($trama){
     $datos = explode(",", $trama);
     list($imei, $tracker, $UTCDateTime, $empty, $statusGPS, $time, $alwaysA, $lat, $latO, $lng, $lngO, $speed) = explode(",", $trama);
+    $imei = substr($imei, 9);
     echo "lat $lat lng $lng". PHP_EOL;
     convertToGoogleMapsFormat($lat, $latO, 'lat');
     convertToGoogleMapsFormat($lng, $lngO, 'lng');
+    return $imei;
 }
 
 /**
