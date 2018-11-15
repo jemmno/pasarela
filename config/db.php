@@ -4,7 +4,7 @@ return [
     'class' => 'yii\db\Connection',
     'dsn' => 'mysql:host=127.0.0.1;dbname=pasarela_cusat',
     'username' => 'root',
-    'password' => '12345678',
+    'password' => 'prabhupada',
     'charset' => 'utf8',
 
     // Schema cache options (for production environment)

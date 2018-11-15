@@ -10,6 +10,7 @@ namespace app\commands;
 use yii\console\Controller;
 use yii\console\ExitCode;
 use app\models\Vehiculo;
+require "utils/parser.php";
 
 /**
  * This command echoes the first argument that you have entered.
@@ -26,14 +27,14 @@ class PasarelaController extends Controller
      * @param string $message the message to be echoed.
      * @return int Exit code
      */
-    public function actionEscuchar($port = '7777')
+    public function actionEscuchar($port = '7778')
     {
         if (!extension_loaded('sockets')) {
             die('The sockets extension is not loaded.');
         }
         
         // conf socket
-        $host = '0.0.0.0';
+        $host = '127.0.0.1';
         
         // create unix udp socket
         $socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
@@ -48,18 +49,16 @@ class PasarelaController extends Controller
         if ($socket === false || !socket_bind($socket, $host, $port)) {
             socket_close($socket);
             onSocketFailure("Failed to bind socket", $socket);
+        } else {
+            echo "escuchando on $host en el port $port". PHP_EOL;
         }
         
         $clients = [];
         while (true) {
             socket_recvfrom($socket, $buffer, 65535, 0, $clientIP,$clientPort);
             $address = "$clientIP:$clientPort";
-            //if (!isset($clients[$address])) {
-            //    $clients[$address] = new Client();
-            //}
-        
-            //$clients[$address]->handlePacket($buffer);
             echo "Received $buffer from remote address $clientIP and remote port $clientPort" . PHP_EOL;
+            self::handleDatagram($buffer);
         }
         
         /**
@@ -75,6 +74,10 @@ class PasarelaController extends Controller
             }
             die($message);
         }
+    }
+
+    function handleDatagram($datagram) {
+        parsear($datagram);
     }
 
     private function findPatente($imeiPosicion=0) {
