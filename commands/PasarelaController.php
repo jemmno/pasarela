@@ -10,6 +10,7 @@ namespace app\commands;
 use yii\console\Controller;
 use yii\console\ExitCode;
 use app\models\Vehiculo;
+
 require "utils/parser.php";
 
 /**
@@ -84,6 +85,7 @@ class PasarelaController extends Controller
             echo "no se encontro patente del vehiculo". PHP_EOL;
         } else {
             echo "patente del vehiculo $patente". PHP_EOL;
+            \Yii::info('Prueba log', 'general_log');
         }
     }
 
