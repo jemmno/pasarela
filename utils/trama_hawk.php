@@ -22,7 +22,9 @@
 function generarTramaHawk($patente, $lat, $lng, $speed, $UTCDateTime)
 {
     $fecha = formatFecha($UTCDateTime);
-    return $trama = "HAWK;ID=$patente;$lat;$lng;$speed;;$fecha;;1;;;;;";
+    $velocidad = millasNauticasAKmH($speed);
+
+    return $trama = "HAWK;ID=$patente;$lat;$lng;$velocidad;;$fecha;;1;;;;;";
 }
 
 function formatFecha($UTCDateTime)
@@ -37,4 +39,10 @@ function formatFecha($UTCDateTime)
 
     $date_obj = new DateTime($year . '-' . $month . '-' . $date . ' ' . $hour . ':' . $minute . '.' . $seg);
     return $date_obj->format('Y/m/d H:i.s');
+}
+
+function millasNauticasAKmH($speed)
+{
+    //1km/h = 1.852 milla nautica
+    return $speed * 1.852;
 }
