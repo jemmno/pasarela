@@ -27,14 +27,14 @@ class PasarelaController extends Controller
      * @param string $message the message to be echoed.
      * @return int Exit code
      */
-    public function actionEscuchar($port = '7778')
+    public function actionEscuchar($port = '6001')
     {
         if (!extension_loaded('sockets')) {
             die('The sockets extension is not loaded.');
         }
         
         // conf socket
-        $host = '127.0.0.1';
+        $host = '192.168.0.19';
         
         // create unix udp socket
         $socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
@@ -77,22 +77,24 @@ class PasarelaController extends Controller
     }
 
     function handleDatagram($datagram) {
-        $imei = parsear($datagram);
+        list($imei, $lat, $lng, $speed) = parsear($datagram);
         echo "imei del vehiculo $imei". PHP_EOL;
-        self::findPatente($imei);
+        $patente = self::findPatente($imei);
+        if (is_null($patente)) {
+            echo "no se encontro patente del vehiculo". PHP_EOL;
+        } else {
+            echo "patente del vehiculo $patente". PHP_EOL;
+        }
     }
 
     private function findPatente($imeiPosicion=0) {
         $connection = \Yii::$app->db;
         $vehiculo = Vehiculo::findOne(['imei' => $imeiPosicion]);		
-        echo "patente: $vehiculo->patente". PHP_EOL;
-
-        // print_r($vehiculo->patente);
-        // echo '<pre>';
-        //     var_dump($vehiculo->patente);
-        // echo '</pre>';
-
-        // return 0;
+        if ($vehiculo){
+            return $vehiculo->patente;
+        }else {
+            return null;
+        }
     }
 
     public function actionTest(){

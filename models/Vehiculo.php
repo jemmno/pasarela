@@ -29,7 +29,7 @@ class Vehiculo extends \yii\db\ActiveRecord
     {
         return [
             [['imei'], 'required'],
-            [['imei'], 'integer'],
+            [['imei'], 'string', 'max' => 15],
             [['descripcion'], 'string'],
             [['patente'], 'string', 'max' => 12],
         ];

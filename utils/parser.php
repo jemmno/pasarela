@@ -7,13 +7,18 @@
  */
 
 function parsear($trama){
+    $imei = '';
     $datos = explode(",", $trama);
     list($imei, $tracker, $UTCDateTime, $empty, $statusGPS, $time, $alwaysA, $lat, $latO, $lng, $lngO, $speed) = explode(",", $trama);
-    $imei = substr($imei, 9);
+    $imei = explode(':', $imei)[1];
     echo "lat $lat lng $lng". PHP_EOL;
-    convertToGoogleMapsFormat($lat, $latO, 'lat');
-    convertToGoogleMapsFormat($lng, $lngO, 'lng');
-    return $imei;
+    if (is_numeric($lat) && is_numeric($lng)) {
+        convertToGoogleMapsFormat($lat, $latO, 'lat');
+        convertToGoogleMapsFormat($lng, $lngO, 'lng');
+    }else{
+        //retornar error de no ubicacion
+    }
+    return array($imei, $lat, $lng, $speed);
 }
 
 /**
@@ -26,7 +31,7 @@ function parsear($trama){
 function convertToGoogleMapsFormat($coordenada, $orientacion, $tipo){
     $dPart = ($tipo == 'lat') ? substr($coordenada, 0, 2) : substr($coordenada, 0, 3);  
     $mPart = ($tipo == 'lat') ? substr($coordenada, 2, 8) : substr($coordenada, 3, 8);
-    $coord = $dpard + ($mPart / 60 );
+    $coord = $dPart + ($mPart / 60 );
     $coord = ($orientacion == 'S' || $orientacion == 'W') ? $coord * -1 : $coord;
     echo "dpart $dPart , mPart $mPart, coord: $coord". PHP_EOL;
     //$pos = $dPart + ()
