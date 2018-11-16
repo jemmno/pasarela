@@ -13,6 +13,7 @@ use app\models\Vehiculo;
 
 require "utils/parser.php";
 require "utils/trama_hawk.php";
+require "utils/sendUDP.php";
 
 /**
  * This command echoes the first argument that you have entered.
@@ -53,6 +54,7 @@ class PasarelaController extends Controller
             onSocketFailure("Failed to bind socket", $socket);
         } else {
             echo "escuchando on $host en el port $port". PHP_EOL;
+            echo "press Ctrl-C to stop". PHP_EOL;
         }
         
         $clients = [];
@@ -90,6 +92,7 @@ class PasarelaController extends Controller
             \Yii::info('Prueba log', 'pasarela_log');
             $tramaHawk = generarTramaHawk($patente, $lat, $lng, $speed, $UTCDateTime);
             print_r($tramaHawk);
+            send($tramaHawk);
         }
     }
 
