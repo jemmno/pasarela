@@ -28,14 +28,14 @@ class PasarelaController extends Controller
      * @param string $message the message to be echoed.
      * @return int Exit code
      */
-    public function actionEscuchar($port = '6001')
+    public function actionEscuchar($port = '7778')
     {
         if (!extension_loaded('sockets')) {
             die('The sockets extension is not loaded.');
         }
         
         // conf socket
-        $host = '192.168.0.19';
+        $host = '127.0.0.1';
         
         // create unix udp socket
         $socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
@@ -85,7 +85,7 @@ class PasarelaController extends Controller
             echo "no se encontro patente del vehiculo". PHP_EOL;
         } else {
             echo "patente del vehiculo $patente". PHP_EOL;
-            \Yii::info('Prueba log', 'general_log');
+            \Yii::info('Prueba log', 'pasarela_log');
         }
     }
 

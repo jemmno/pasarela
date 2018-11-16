@@ -40,6 +40,12 @@ $config = [
                     'class' => 'yii\log\FileTarget',
                     'levels' => ['error', 'warning'],
                 ],
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['info'],
+                    'categories' => ['pasarela_log'],
+                    'logFile' => '@app/runtime/logs/pasarela_log.log',
+                ]
             ],
         ],
         'db' => $db,
