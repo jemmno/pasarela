@@ -13,12 +13,12 @@ function parsear($trama){
     $imei = explode(':', $imei)[1];
     echo "lat $lat lng $lng". PHP_EOL;
     if (is_numeric($lat) && is_numeric($lng)) {
-        convertToGoogleMapsFormat($lat, $latO, 'lat');
-        convertToGoogleMapsFormat($lng, $lngO, 'lng');
+        $latitude = convertToGoogleMapsFormat($lat, $latO, 'lat');
+        $longitude = convertToGoogleMapsFormat($lng, $lngO, 'lng');
     }else{
         //retornar error de no ubicacion
     }
-    return array($imei, $lat, $lng, $speed);
+    return array($imei, $latitude, $longitude, $speed, $UTCDateTime);
 }
 
 /**
@@ -34,7 +34,6 @@ function convertToGoogleMapsFormat($coordenada, $orientacion, $tipo){
     $coord = $dPart + ($mPart / 60 );
     $coord = ($orientacion == 'S' || $orientacion == 'W') ? $coord * -1 : $coord;
     echo "dpart $dPart , mPart $mPart, coord: $coord". PHP_EOL;
-    //$pos = $dPart + ()
-    //return ;
+    return $coord;
 }
 ?>

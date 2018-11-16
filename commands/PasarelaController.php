@@ -12,6 +12,7 @@ use yii\console\ExitCode;
 use app\models\Vehiculo;
 
 require "utils/parser.php";
+require "utils/trama_hawk.php";
 
 /**
  * This command echoes the first argument that you have entered.
@@ -78,7 +79,8 @@ class PasarelaController extends Controller
     }
 
     function handleDatagram($datagram) {
-        list($imei, $lat, $lng, $speed) = parsear($datagram);
+        $tramaHawk = '';
+        list($imei, $lat, $lng, $speed, $UTCDateTime) = parsear($datagram);
         echo "imei del vehiculo $imei". PHP_EOL;
         $patente = self::findPatente($imei);
         if (is_null($patente)) {
@@ -86,6 +88,8 @@ class PasarelaController extends Controller
         } else {
             echo "patente del vehiculo $patente". PHP_EOL;
             \Yii::info('Prueba log', 'pasarela_log');
+            $tramaHawk = generarTramaHawk($patente, $lat, $lng, $speed, $UTCDateTime);
+            print_r($tramaHawk);
         }
     }
 
@@ -100,15 +104,8 @@ class PasarelaController extends Controller
     }
 
     public function actionTest(){
-
-		$connection = \Yii::$app->db;
-
-		//print_R($connection);
-
-
-		$vehiculo = Vehiculo::findOne(['imei' => 1234567890]);		
-
-		print_r($vehiculo->patente);
-
+        $connection = \Yii::$app->db;
+        $vehiculo = Vehiculo::findOne(['imei' => 1234567890]);		
+        print_r($vehiculo->patente);
 	}
 }
