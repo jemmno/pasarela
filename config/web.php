@@ -6,7 +6,17 @@ $db = require __DIR__ . '/db.php';
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => ['log-reader'],
+    'modules' => [
+        'log-reader' => [
+            'class' => 'kriss\logReader\Module',
+            'aliases' => [
+                'Frontend Errors' => '@frontend/runtime/logs/app.log',
+                'Backend Errors' => '@backend/runtime/logs/app.log',
+                'Pasarela' => '@runtime/logs/pasarela.log',
+            ],
+        ],
+    ],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',

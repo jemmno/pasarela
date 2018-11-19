@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "11dc19ae1bd8fd0737fec254fc20f7de",
+    "content-hash": "d329cb92ad892a59c95e6a729af610ea",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
@@ -55,7 +55,7 @@
             "version": "3.2.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/jquery/jquery-dist.git",
+                "url": "git@github.com:jquery/jquery-dist.git",
                 "reference": "77d2a51d0520d2ee44173afdf4e40a9201f5964e"
             },
             "dist": {
@@ -213,6 +213,49 @@
                 "html"
             ],
             "time": "2018-02-23T01:58:20+00:00"
+        },
+        {
+            "name": "kriss/yii2-log-reader",
+            "version": "2.2.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/krissss/yii2-log-reader.git",
+                "reference": "190de7df59bd673bafd493e576c028e8d8ceeef6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/krissss/yii2-log-reader/zipball/190de7df59bd673bafd493e576c028e8d8ceeef6",
+                "reference": "190de7df59bd673bafd493e576c028e8d8ceeef6",
+                "shasum": ""
+            },
+            "require": {
+                "yiisoft/yii2": "*"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "kriss\\logReader\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "kriss",
+                    "email": "462679766@qq.com"
+                }
+            ],
+            "description": "Yii2 log reader",
+            "keywords": [
+                "extension",
+                "log",
+                "log reader",
+                "module",
+                "yii2"
+            ],
+            "time": "2018-08-21T03:47:43+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
