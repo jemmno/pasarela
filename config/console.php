@@ -27,6 +27,7 @@ $config = [
                     'levels' => ['info'],
                     'categories' => ['pasarela_log'],
                     'logFile' => '@app/runtime/logs/pasarela_log.log',
+                    'logVars' => []
                 ]
             ],
         ],
