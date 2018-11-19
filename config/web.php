@@ -42,8 +42,7 @@ $config = [
                 ],
                 [
                     'class' => 'yii\log\FileTarget',
-                    'levels' => ['info'],
-                    'categories' => ['pasarela_log'],
+                    'categories' => ['pasarelalog'],
                     'logFile' => '@app/runtime/logs/pasarela_log.log',
                 ]
             ],

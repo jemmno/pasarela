@@ -22,6 +22,7 @@ require "utils/sendUDP.php";
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ * lsof -ti:port kill -9 port
  */
 class PasarelaController extends Controller
 {
@@ -31,7 +32,8 @@ class PasarelaController extends Controller
      * @return int Exit code
      */
     public function actionEscuchar($port = '7778')
-    {
+    {   
+        \Yii::info('Escuchando desde: '. date('l jS \of F Y h:i:s A') ."\n", 'pasarela');
         if (!extension_loaded('sockets')) {
             die('The sockets extension is not loaded.');
         }
@@ -89,7 +91,7 @@ class PasarelaController extends Controller
             echo "no se encontro patente del vehiculo". PHP_EOL;
         } else {
             echo "patente del vehiculo $patente". PHP_EOL;
-            \Yii::info('Prueba log', 'pasarela_log');
+            \Yii::error('Prueba log', 'pasarelalog');
             $tramaHawk = generarTramaHawk($patente, $lat, $lng, $speed, $UTCDateTime);
             print_r($tramaHawk);
             send($tramaHawk);
@@ -110,5 +112,6 @@ class PasarelaController extends Controller
         $connection = \Yii::$app->db;
         $vehiculo = Vehiculo::findOne(['imei' => 1234567890]);		
         print_r($vehiculo->patente);
-	}
+    }
+    
 }
