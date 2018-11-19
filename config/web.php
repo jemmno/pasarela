@@ -1,9 +1,12 @@
 <?php
+use app\utils\Brand;
 
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
 $config = [
+    'name' => 'Pasarela',
+    'defaultRoute' => 'vehiculo/index',
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log-reader'],
