@@ -11,6 +11,7 @@ use Yii;
  * @property string $patente
  * @property int $imei
  * @property string $descripcion
+ * @property string $gps
  */
 class Vehiculo extends \yii\db\ActiveRecord
 {
@@ -32,6 +33,7 @@ class Vehiculo extends \yii\db\ActiveRecord
             [['imei'], 'string', 'max' => 15],
             [['descripcion'], 'string'],
             [['patente'], 'string', 'max' => 12],
+            [['gps'], 'string', 'max' => 12],
         ];
     }
 
@@ -44,7 +46,8 @@ class Vehiculo extends \yii\db\ActiveRecord
             'id' => 'ID',
             'patente' => 'Patente',
             'imei' => 'Imei',
-            'descripcion' => 'Descripcion',
+            'descripcion' => 'Descripción',
+            'gps' => 'Modelo GPS'
         ];
     }
 }
