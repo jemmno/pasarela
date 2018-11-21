@@ -64,7 +64,6 @@ class PasarelaController extends Controller
             socket_recvfrom($socket, $buffer, 65535, 0, $clientIP,$clientPort);
             $address = "$clientIP:$clientPort";
             echo "Received $buffer from remote address $clientIP and remote port $clientPort" . PHP_EOL;
-            echo " #### IMEI via regex" . self::get_imei($buffer); 
             self::handleDatagram($buffer);
         }
         
@@ -85,10 +84,24 @@ class PasarelaController extends Controller
 
     function handleDatagram($datagram) {
         $tramaHawk = '';
-        list($imei, $lat, $lng, $speed, $UTCDateTime) = parsear($datagram);
-        echo "imei del vehiculo $imei". PHP_EOL;
-        $patente = self::findPatente($imei);
-        if (is_null($patente)) {
+        $imei = self::get_imei($datagram);
+        echo " #### IMEI via regex" . $imei;
+        list( $patente, $gps ) = self::findPatente($imei);
+
+        switch($gps) {
+            case 102:
+                list($imei, $lat, $lng, $speed, $UTCDateTime) = parsear($datagram);        
+                break;
+            case 103:
+                echo "### TODO gps coban 103". PHP_EOL;
+                break;
+            default:
+                echo "### no tiene modelo gps". PHP_EOL;
+        }
+        
+        //echo "imei del vehiculo $imei". PHP_EOL;
+        $lat = null;
+        if (is_null($patente) or is_null($lat)) {
             echo "no se encontro patente del vehiculo". PHP_EOL;
         } else {
             echo "patente del vehiculo $patente". PHP_EOL;
@@ -104,7 +117,7 @@ class PasarelaController extends Controller
         $connection = \Yii::$app->db;
         $vehiculo = Vehiculo::findOne(['imei' => $imeiPosicion]);		
         if ($vehiculo){
-            return $vehiculo->patente;
+            return array($vehiculo->patente, $vehiculo->gps);
         }else {
             return null;
         }
