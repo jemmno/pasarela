@@ -64,6 +64,7 @@ class PasarelaController extends Controller
             socket_recvfrom($socket, $buffer, 65535, 0, $clientIP,$clientPort);
             $address = "$clientIP:$clientPort";
             echo "Received $buffer from remote address $clientIP and remote port $clientPort" . PHP_EOL;
+            echo " #### IMEI via regex" . self::get_imei($buffer); 
             self::handleDatagram($buffer);
         }
         
@@ -115,4 +116,8 @@ class PasarelaController extends Controller
         print_r($vehiculo->patente);
     }
     
+    function get_imei ($str) {
+        preg_match_all('/\d{15}/', $str, $matches);
+        return $matches[0][0];
+    }
 }
