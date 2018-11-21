@@ -14,8 +14,8 @@ $config = [
         'log-reader' => [
             'class' => 'kriss\logReader\Module',
             'aliases' => [
-                'Frontend Errors' => '@frontend/runtime/logs/app.log',
-                'Backend Errors' => '@backend/runtime/logs/app.log',
+                //'Frontend Errors' => '@frontend/runtime/logs/app.log',
+                //'Backend Errors' => '@backend/runtime/logs/app.log',
                 'Pasarela' => '@runtime/logs/pasarela.log',
             ],
         ],

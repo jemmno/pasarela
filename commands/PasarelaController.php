@@ -91,10 +91,11 @@ class PasarelaController extends Controller
             echo "no se encontro patente del vehiculo". PHP_EOL;
         } else {
             echo "patente del vehiculo $patente". PHP_EOL;
-            \Yii::error('Prueba log', 'pasarelalog');
             $tramaHawk = generarTramaHawk($patente, $lat, $lng, $speed, $UTCDateTime);
+            \Yii::info('Posición recibida... imei= '. $imei . ', patente= ' . $patente . ', posición= ' . $lat .', ' . $lng ."\n", 'pasarela');
             print_r($tramaHawk);
             send($tramaHawk);
+            send_local($datagram);
         }
     }
 
