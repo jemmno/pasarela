@@ -1,10 +1,11 @@
 <?php
+/* @var codemix\yii2confload\Config $this */
 
 return [
     'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=127.0.0.1;dbname=pasarela_cusat',
-    'username' => 'root',
-    'password' => '12345678',
+    'dsn' => self::env('DB_DSN', 'mysql:host=db;dbname=web'),
+    'username' => self::env('DB_USER', 'web'),
+    'password' => self::env('DB_PASSWORD', 'web'),
     'charset' => 'utf8',
 
     // Schema cache options (for production environment)
