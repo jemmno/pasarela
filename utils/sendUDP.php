@@ -1,9 +1,10 @@
 <?php
+use codemix\yii2confload\Config;
 
 function send($trama)
 {
-    $server_ip = '127.0.0.1';
-    $server_port = 43278;
+    $server_ip = Config::env('IP_FORWARD', '127.0.0.1');
+    $server_port = Config::env('PORT_FORWARD', '43278');
     print PHP_EOL."####################". PHP_EOL;
     print "Sending trama to IP $server_ip, port $server_port". PHP_EOL;
 
@@ -20,8 +21,8 @@ function send($trama)
 
 function send_local($trama)
 {
-    $server_ip = '127.0.0.1';
-    $server_port = 43279;
+    $server_ip = Config::env('LOCAL_IP_FORWARD', '127.0.0.1');
+    $server_port = Config::env('LOCAL_PORT_FORWARD', '43278');
     print PHP_EOL."####################". PHP_EOL;
     print "Sending local to IP $server_ip, port $server_port". PHP_EOL;
 

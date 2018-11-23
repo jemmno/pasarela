@@ -1,4 +1,8 @@
 <?php
+/* @var codemix\yii2confload\Config $this */
+
+use codemix\yii2confload\Config;
+$web = $this->web();
 
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
@@ -42,7 +46,7 @@ $config = [
                 ],
             ],
         ],
-        'db' => $db,
+        'db' => $web['components']['db'],
     ],
     'params' => $params,
     /*

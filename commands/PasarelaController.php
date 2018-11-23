@@ -10,6 +10,7 @@ namespace app\commands;
 use yii\console\Controller;
 use yii\console\ExitCode;
 use app\models\Vehiculo;
+use codemix\yii2confload\Config;
 
 require "utils/parser.php";
 require "utils/trama_hawk.php";
@@ -31,15 +32,16 @@ class PasarelaController extends Controller
      * @param string $message the message to be echoed.
      * @return int Exit code
      */
-    public function actionEscuchar($port = '7778')
+    public function actionEscuchar()
     {   
+        $port = Config::env('PORT_LISTEN', '7778');
         \Yii::info('Escuchando desde: '. date('l jS \of F Y h:i:s A') ."\n", 'pasarela');
         if (!extension_loaded('sockets')) {
             die('The sockets extension is not loaded.');
         }
         
         // conf socket
-        $host = '127.0.0.1';
+        $host = Config::env('IP_LISTEN', '127.0.0.1');
         
         // create unix udp socket
         $socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
@@ -87,7 +89,8 @@ class PasarelaController extends Controller
         $imei = self::get_imei($datagram);
         echo " #### IMEI via regex" . $imei;
         list( $patente, $gps ) = self::findPatente($imei);
-
+        echo  "### GPS " . $gps;
+        $lat = null;
         switch($gps) {
             case 102:
                 list($imei, $lat, $lng, $speed, $UTCDateTime) = parsear($datagram);        
@@ -100,7 +103,6 @@ class PasarelaController extends Controller
         }
         
         //echo "imei del vehiculo $imei". PHP_EOL;
-        $lat = null;
         if (is_null($patente) or is_null($lat)) {
             echo "no se encontro patente del vehiculo". PHP_EOL;
         } else {
