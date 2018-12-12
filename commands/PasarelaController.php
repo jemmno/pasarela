@@ -96,7 +96,8 @@ class PasarelaController extends Controller
                 list($imei, $lat, $lng, $speed, $UTCDateTime) = parsear($datagram);        
                 break;
             case 103:
-                echo "### TODO gps coban 103". PHP_EOL;
+                //de momento parsear como un coban 102
+                list($imei, $lat, $lng, $speed, $UTCDateTime) = parsear($datagram);      
                 break;
             default:
                 echo "### no tiene modelo gps". PHP_EOL;
