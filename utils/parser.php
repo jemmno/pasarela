@@ -17,7 +17,6 @@
  */
 function parsear($trama){
     $imei = '';
-    $datos = explode(",", $trama);
     list($imei, $tracker, $UTCDateTime, $empty, $statusGPS, $time, $alwaysA, $lat, $latO, $lng, $lngO, $speed) = explode(",", $trama);
     $imei = explode(':', $imei)[1];
     echo "lat $lat lng $lng". PHP_EOL;
