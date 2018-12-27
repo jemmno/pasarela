@@ -7,10 +7,9 @@
 
 namespace app\commands;
 
-use yii\console\Controller;
-use yii\console\ExitCode;
 use app\models\Vehiculo;
 use codemix\yii2confload\Config;
+use yii\console\Controller;
 
 require "utils/parser.php";
 require "utils/trama_hawk.php";
@@ -33,42 +32,42 @@ class PasarelaController extends Controller
      * @return int Exit code
      */
     public function actionEscuchar()
-    {   
+    {
         $port = Config::env('PORT_LISTEN', '7778');
-        \Yii::info('Escuchando desde: '. date('l jS \of F Y h:i:s A') ."\n", 'pasarela');
+        \Yii::info('Escuchando desde: ' . date('l jS \of F Y h:i:s A') . "\n", 'pasarela');
         if (!extension_loaded('sockets')) {
             die('The sockets extension is not loaded.');
         }
-        
+
         // conf socket
         $host = Config::env('IP_LISTEN', '127.0.0.1');
-        
+
         // create unix udp socket
         $socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
         if (!$socket) {
             onSocketFailure("Failed to create socket", $socket);
         }
-        
+
         // reuseable port
         socket_set_option($socket, SOL_SOCKET, SO_REUSEADDR, 1);
-        
+
         // bind
         if ($socket === false || !socket_bind($socket, $host, $port)) {
             socket_close($socket);
             onSocketFailure("Failed to bind socket", $socket);
         } else {
-            echo "escuchando on $host en el port $port". PHP_EOL;
-            echo "press Ctrl-C to stop". PHP_EOL;
+            echo "escuchando on $host en el port $port" . PHP_EOL;
+            echo "press Ctrl-C to stop" . PHP_EOL;
         }
-        
+
         $clients = [];
         while (true) {
-            socket_recvfrom($socket, $buffer, 65535, 0, $clientIP,$clientPort);
+            socket_recvfrom($socket, $buffer, 65535, 0, $clientIP, $clientPort);
             $address = "$clientIP:$clientPort";
             echo "Received $buffer from remote address $clientIP and remote port $clientPort" . PHP_EOL;
             self::handleDatagram($buffer);
         }
-        
+
         /**
          * Trigger an exception with the last socket error.
          *
@@ -84,55 +83,70 @@ class PasarelaController extends Controller
         }
     }
 
-    function handleDatagram($datagram) {
+    public function handleDatagram($datagram)
+    {
         $tramaHawk = '';
         $imei = self::get_imei($datagram);
         echo " #### IMEI via regex" . $imei;
-        list( $patente, $gps ) = self::findPatente($imei);
-        echo  "### GPS " . $gps;
+        list($patente, $gps) = self::findPatente($imei);
+        echo "### GPS " . $gps;
         $lat = null;
-        switch($gps) {
-            case 102:
-                list($imei, $lat, $lng, $speed, $UTCDateTime) = parsear($datagram);        
-                break;
-            case 103:
-                echo "### TODO gps coban 103". PHP_EOL;
-                break;
-            default:
-                echo "### no tiene modelo gps". PHP_EOL;
+        if (!self::isHeartbeat($datagram, $imei)) {
+            switch ($gps) {
+                case 102:
+                    list($imei, $lat, $lng, $speed, $UTCDateTime) = parsear($datagram);
+                    break;
+                case 103:
+                    //de momento parsear como un coban 102
+                    list($imei, $lat, $lng, $speed, $UTCDateTime) = parsear($datagram);
+                    break;
+                default:
+                    echo "### no tiene modelo gps" . PHP_EOL;
+            }
+        } else {
+            echo "### recibio un Heartbeat" . PHP_EOL;
         }
-        
+
         //echo "imei del vehiculo $imei". PHP_EOL;
         if (is_null($patente) or is_null($lat)) {
-            echo "no se encontro patente del vehiculo". PHP_EOL;
+            echo "no se encontro patente del vehiculo" . PHP_EOL;
         } else {
-            echo "patente del vehiculo $patente". PHP_EOL;
+            echo "patente del vehiculo $patente" . PHP_EOL;
             $tramaHawk = generarTramaHawk($patente, $lat, $lng, $speed, $UTCDateTime);
-            \Yii::info('Posición recibida... imei= '. $imei . ', patente= ' . $patente . ', posición= ' . $lat .', ' . $lng ."\n", 'pasarela');
+            \Yii::info('Posición recibida... imei= ' . $imei . ', patente= ' . $patente . ', posición= ' . $lat . ', ' . $lng . "\n", 'pasarela');
             print_r($tramaHawk);
             send($tramaHawk);
             send_local($datagram);
         }
     }
 
-    private function findPatente($imeiPosicion=0) {
+    private function findPatente($imeiPosicion = 0)
+    {
         $connection = \Yii::$app->db;
-        $vehiculo = Vehiculo::findOne(['imei' => $imeiPosicion]);		
-        if ($vehiculo){
+        $vehiculo = Vehiculo::findOne(['imei' => $imeiPosicion]);
+        if ($vehiculo) {
             return array($vehiculo->patente, $vehiculo->gps);
-        }else {
+        } else {
             return null;
         }
     }
 
-    public function actionTest(){
+    public function actionTest()
+    {
         $connection = \Yii::$app->db;
-        $vehiculo = Vehiculo::findOne(['imei' => 1234567890]);		
+        $vehiculo = Vehiculo::findOne(['imei' => 1234567890]);
         print_r($vehiculo->patente);
     }
-    
-    function get_imei ($str) {
+
+    public function get_imei($str)
+    {
         preg_match_all('/\d{15}/', $str, $matches);
         return $matches[0][0];
+    }
+    
+    //verifica que la trama recibida no sea un Heartbeat 
+    function isHeartbeat($datagram, $imei)
+    {
+        return ( strlen($imei) + 5 ) > strlen($datagram);
     }
 }

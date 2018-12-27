@@ -18,7 +18,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'descripcion')->textarea(['rows' => 6]) ?>
 
-    <? $var = [ 102 => 'tk102', 103 => 'tk103' ]; ?>
+    <?php $var = [ 102 => 'tk102', 103 => 'tk103' ]; ?>
 
     <?= $form->field($model, 'gps')->dropDownList($var, ['prompt' => 'Seleccione modelo GPS' ]); ?>
 
