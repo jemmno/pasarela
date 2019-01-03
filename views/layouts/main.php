@@ -38,8 +38,6 @@ AppAsset::register($this);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
-            ['label' => 'Vehículos', 'url' => ['/vehiculo']],
-            ['label' => 'Log', 'url' => ['/log-reader']],
             Yii::$app->user->isGuest ? (
                 ['label' => 'Login', 'url' => ['/site/login']]
             ) : (
@@ -54,6 +52,17 @@ AppAsset::register($this);
             )
         ],
     ]);
+    
+    echo !Yii::$app->user->isGuest ? 
+    Nav::widget([
+        'options' => ['class' => 'navbar-nav navbar-right'],
+        'items' => [
+            ['label' => 'Vehículos', 'url' => ['/vehiculo']],
+            ['label' => 'Log', 'url' => ['/log-reader']]
+        ] 
+    ]) : ( null );
+
+    
     NavBar::end();
     ?>
 
