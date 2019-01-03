@@ -52,4 +52,3 @@ function convertToGoogleMapsFormat($coordenada, $orientacion, $tipo){
 function IsNullOrEmptyString($str){
     return (!isset($str) || trim($str) === '');
 }
-?>
