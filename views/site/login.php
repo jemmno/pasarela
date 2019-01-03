@@ -20,9 +20,9 @@ $fieldOptions2 = [
 ?>
 
 <div class="login-box">
-    <div class="login-logo">
-        <a href="#"><b>L</b>ogin</a>
-    </div>
+    
+    <div class="row">
+            <div class="col-md-4 col-md-offset-4">
     <div class="login-box-body login">
         <p class="login-box-msg">Login</p>
 
@@ -48,7 +48,8 @@ $fieldOptions2 = [
         </div>
 
         <?php ActiveForm::end(); ?>
-
+        </div>
+        </div>
     </div>
         
 </div>

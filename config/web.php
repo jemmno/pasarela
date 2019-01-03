@@ -6,7 +6,7 @@ $db = require __DIR__ . '/db.php';
 
 $config = [
     'name' => 'Pasarela',
-    'defaultRoute' => 'vehiculo/index',
+    'defaultRoute' => 'site/index',
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log-reader'],
