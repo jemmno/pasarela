@@ -8,6 +8,7 @@ $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
 $config = [
+    'timeZone' => 'America/Asuncion', // time zone
     'id' => 'basic-console',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
@@ -43,6 +44,14 @@ $config = [
                     'categories' => ['pasarela'],
                     'logVars' => [],
                     'logFile' => '@runtime/logs/pasarela.log',
+                ],
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'exportInterval' => 1,
+                    'levels' => ['info'],
+                    'categories' => ['global'],
+                    'logVars' => [],
+                    'logFile' => '@runtime/logs/global.log',
                 ],
             ],
         ],

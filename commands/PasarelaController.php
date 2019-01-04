@@ -65,6 +65,7 @@ class PasarelaController extends Controller
             socket_recvfrom($socket, $buffer, 65535, 0, $clientIP, $clientPort);
             $address = "$clientIP:$clientPort";
             echo "Received $buffer from remote address $clientIP and remote port $clientPort" . PHP_EOL;
+            \Yii::info($buffer . "\n", 'global');
             self::handleDatagram($buffer);
         }
 
