@@ -109,7 +109,13 @@ public function validateAuthKey($authKey) {
  * @return boolean if password provided is valid for current user
  */
 public function validatePassword($password) {
-    return $this->password ===  md5($password);
+    return Yii::$app->security->validatePassword($password, $this->password);
+}
+
+public function beforeSave($insert) {
+    if(isset($this->password)) 
+        $this->password = Yii::$app->security->generatePasswordHash($this->password);
+    return parent::beforeSave($insert);
 }
 
 }

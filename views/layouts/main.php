@@ -57,6 +57,7 @@ AppAsset::register($this);
     Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
+            ['label' => 'Usuarios', 'url' => ['/user']],
             ['label' => 'Vehículos', 'url' => ['/vehiculo']],
             ['label' => 'Log', 'url' => ['/log-reader']]
         ] 

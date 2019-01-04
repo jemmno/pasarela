@@ -24,8 +24,6 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'password')->passwordInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'password_reset_token')->textInput(['maxlength' => true]) ?>
-
     <?= $form->field($model, 'user_level')->dropDownList([ 'Admin' => 'Admin', 'Normal' => 'Normal', ], ['prompt' => '']) ?>
 
     <div class="form-group">
