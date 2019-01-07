@@ -98,7 +98,7 @@ class PasarelaController extends Controller
         list($patente, $gps) = self::findPatente($imei);
         echo "### GPS " . $gps;
         $lat = null;
-        if (!self::isHeartbeat($datagram, $imei)) {
+        if (!self::isHeartbeat($datagram)) {
             switch ($gps) {
                 case 102:
                     list($imei, $lat, $lng, $speed, $UTCDateTime) = parsear($datagram);
@@ -152,8 +152,8 @@ class PasarelaController extends Controller
     }
     
     //verifica que la trama recibida no sea un Heartbeat 
-    function isHeartbeat($datagram, $imei)
+    function isHeartbeat($datagram)
     {
-        return ( strlen($imei) + 5 ) > strlen($datagram);
+        return substr_count($datagram, ',') !== 12; 
     }
 }
