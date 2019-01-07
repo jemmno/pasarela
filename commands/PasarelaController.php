@@ -71,6 +71,7 @@ class PasarelaController extends Controller
             }
             $address = "$clientIP:$clientPort";
             echo "Received $buffer from remote address $clientIP and remote port $clientPort" . PHP_EOL;
+            \Yii::info($buffer . "\n", 'global');
             self::handleDatagram($buffer);
         }
 
