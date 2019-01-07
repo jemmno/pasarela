@@ -62,7 +62,13 @@ class PasarelaController extends Controller
 
         $clients = [];
         while (true) {
-            socket_recvfrom($socket, $buffer, 65535, 0, $clientIP, $clientPort);
+            $buffer = null;
+            try{
+                socket_recvfrom($socket, $buffer, 65535, 0, $clientIP, $clientPort);
+            } catch (Exception $e) {
+                echo "Error en el buffer";
+                // TRATA 
+            }
             $address = "$clientIP:$clientPort";
             echo "Received $buffer from remote address $clientIP and remote port $clientPort" . PHP_EOL;
             self::handleDatagram($buffer);
