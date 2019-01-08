@@ -66,15 +66,22 @@ class PasarelaController extends Controller
             try{
                 socket_recvfrom($socket, $buffer, 65535, 0, $clientIP, $clientPort);
             } catch (ErrorException $e) {
-                echo "Error en el buffer 0";
+                echo "Error en el buffer 0".$e;
             } catch (Exception $e) {
-                echo "Error en el buffer 1";
-                // TRATA 
+                echo "Error en el buffer 1".$e;
             }
-            $address = "$clientIP:$clientPort";
-            echo "Received $buffer from remote address $clientIP and remote port $clientPort" . PHP_EOL;
-            \Yii::info($buffer . "\n", 'global');
-            self::handleDatagram($buffer);
+            if(strlen($buffer)>0)//here getting zero legth data
+            {
+                $address = "$clientIP:$clientPort";
+                echo "Received $buffer from remote address $clientIP and remote port $clientPort" . PHP_EOL;
+                \Yii::info($buffer . "\n", 'global');
+                self::handleDatagram($buffer);
+            }
+            else 
+            {
+                echo "Buffer vacio" . PHP_EOL;
+            }
+            
         }
 
         /**
