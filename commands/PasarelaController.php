@@ -65,8 +65,10 @@ class PasarelaController extends Controller
             $buffer = null;
             try{
                 socket_recvfrom($socket, $buffer, 65535, 0, $clientIP, $clientPort);
+            } catch (ErrorException $e) {
+                echo "Error en el buffer 0";
             } catch (Exception $e) {
-                echo "Error en el buffer";
+                echo "Error en el buffer 1";
                 // TRATA 
             }
             $address = "$clientIP:$clientPort";
