@@ -63,34 +63,31 @@ class PasarelaController extends Controller
 
         $buffer = '';
 
-        while (1) 
-        {
+        while (1) {
             echo "\nWaiting for data ... \n";
 
-            try{
+            try {
                 socket_recvfrom($socket, $buffer, 65535, 0, $clientIP, $clientPort);
             } catch (ErrorException $e) {
                 $message .= ": " . socket_strerror(socket_last_error($socket));
-                echo "\n Error en el buffer 0".$message;
-                echo "\n Error en el buffer 00".$e;
+                echo "\n Error en el buffer 0" . $message;
+                echo "\n Error en el buffer 00" . $e;
             } catch (Exception $e) {
                 $message .= ": " . socket_strerror(socket_last_error($socket));
-                echo "\n Error en el buffer I".$message;
-                echo "\n Error en el buffer II".$e;
+                echo "\n Error en el buffer I" . $message;
+                echo "\n Error en el buffer II" . $e;
             }
-            if(strlen($buffer)>0)//here getting zero legth data
+            if (strlen($buffer) > 0) //here getting zero legth data
             {
                 $address = "$clientIP:$clientPort";
                 echo "Received $buffer from remote address $clientIP and remote port $clientPort" . PHP_EOL;
                 \Yii::info($buffer . "\n", 'global');
                 self::handleDatagram($buffer);
                 $buffer = '';
-            }
-            else 
-            {
+            } else {
                 echo "Buffer vacio" . PHP_EOL;
             }
-            
+
         }
 
         /**
@@ -112,36 +109,36 @@ class PasarelaController extends Controller
     {
         $tramaHawk = '';
         $imei = self::get_imei($datagram);
-        echo " #### IMEI via regex" . $imei;
-        list($patente, $gps) = self::findPatente($imei);
-        echo "### GPS " . $gps;
-        $lat = null;
-        if (!self::isHeartbeat($datagram)) {
-            switch ($gps) {
-                case 102:
-                    list($imei, $lat, $lng, $speed, $UTCDateTime) = parsear($datagram);
-                    break;
-                case 103:
-                    //de momento parsear como un coban 102
-                    list($imei, $lat, $lng, $speed, $UTCDateTime) = parsear($datagram);
-                    break;
-                default:
-                    echo "### no tiene modelo gps" . PHP_EOL;
-            }
-        } else {
-            echo "### recibio un Heartbeat" . PHP_EOL;
-        }
+        if ($imei != '') {
 
-        //echo "imei del vehiculo $imei". PHP_EOL;
-        if (is_null($patente) or is_null($lat)) {
-            echo "no se encontro patente del vehiculo" . PHP_EOL;
-        } else {
-            echo "patente del vehiculo $patente" . PHP_EOL;
-            $tramaHawk = generarTramaHawk($patente, $lat, $lng, $speed, $UTCDateTime);
-            \Yii::info('Posición recibida... imei= ' . $imei . ', patente= ' . $patente . ', posición= ' . $lat . ', ' . $lng . "\n", 'pasarela');
-            print_r($tramaHawk);
-            send($tramaHawk);
-            send_local($datagram);
+            list($patente, $gps) = self::findPatente($imei);
+            $lat = null;
+            if (!self::isHeartbeat($datagram)) {
+                switch ($gps) {
+                    case 102:
+                        list($imei, $lat, $lng, $speed, $UTCDateTime) = parsear($datagram);
+                        break;
+                    case 103:
+                        //de momento parsear como un coban 102
+                        list($imei, $lat, $lng, $speed, $UTCDateTime) = parsear($datagram);
+                        break;
+                    default:
+                        echo "### no tiene modelo gps" . PHP_EOL;
+                }
+            } else {
+                echo "\n Recibio un Heartbeat o formato inadecuado" . PHP_EOL;
+            }
+
+            if (is_null($patente) or is_null($lat)) {
+                echo "no se encontro patente del vehiculo" . PHP_EOL;
+            } else {
+                echo "patente del vehiculo $patente" . PHP_EOL;
+                $tramaHawk = generarTramaHawk($patente, $lat, $lng, $speed, $UTCDateTime);
+                \Yii::info('Posición recibida... imei= ' . $imei . ', patente= ' . $patente . ', posición= ' . $lat . ', ' . $lng . "\n", 'pasarela');
+                print_r($tramaHawk);
+                send($tramaHawk);
+                send_local($datagram);
+            }
         }
     }
 
@@ -166,12 +163,18 @@ class PasarelaController extends Controller
     public function get_imei($str)
     {
         preg_match_all('/\d{15}/', $str, $matches);
-        return $matches[0][0];
+        if (isset($matches[0][0])) {
+            echo " #### IMEI via regex" . $matches[0][0];
+            return $matches[0][0];
+        } else {
+            return '';
+        }
+
     }
-    
-    //verifica que la trama recibida no sea un Heartbeat 
-    function isHeartbeat($datagram)
+
+    //verifica que la trama recibida no sea un Heartbeat
+    public function isHeartbeat($datagram)
     {
-        return substr_count($datagram, ',') !== 12; 
+        return substr_count($datagram, ',') !== 12;
     }
 }
