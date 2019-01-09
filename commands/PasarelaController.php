@@ -60,9 +60,9 @@ class PasarelaController extends Controller
             echo "press Ctrl-C to stop" . PHP_EOL;
         }
 
-        $clients = [];
+        $buffer = '';
+
         while (true) {
-            $buffer = null;
             try{
                 socket_recvfrom($socket, $buffer, 65535, 0, $clientIP, $clientPort);
             } catch (ErrorException $e) {
@@ -76,6 +76,7 @@ class PasarelaController extends Controller
                 echo "Received $buffer from remote address $clientIP and remote port $clientPort" . PHP_EOL;
                 \Yii::info($buffer . "\n", 'global');
                 self::handleDatagram($buffer);
+                $buffer = '';
             }
             else 
             {
