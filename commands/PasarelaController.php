@@ -33,14 +33,13 @@ class PasarelaController extends Controller
      */
     public function actionEscuchar()
     {
+        // conf socket
         $port = Config::env('PORT_LISTEN', '7778');
-        \Yii::info('Escuchando desde: ' . date('l jS \of F Y h:i:s A') . "\n", 'pasarela');
+        $host = Config::env('IP_LISTEN', '127.0.0.1');
+
         if (!extension_loaded('sockets')) {
             die('The sockets extension is not loaded.');
         }
-
-        // conf socket
-        $host = Config::env('IP_LISTEN', '127.0.0.1');
 
         // create unix udp socket
         $socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
@@ -48,27 +47,36 @@ class PasarelaController extends Controller
             onSocketFailure("Failed to create socket", $socket);
         }
 
-        // reuseable port
-        socket_set_option($socket, SOL_SOCKET, SO_REUSEADDR, 1);
+        echo "Socket created \n";
 
         // bind
         if ($socket === false || !socket_bind($socket, $host, $port)) {
-            socket_close($socket);
+            spsocket_close($socket);
             onSocketFailure("Failed to bind socket", $socket);
         } else {
-            echo "escuchando on $host en el port $port" . PHP_EOL;
-            echo "press Ctrl-C to stop" . PHP_EOL;
+            echo "Socket bind OK \n";
         }
+
+        echo "Listen on $host:$port" . PHP_EOL;
+        echo "press Ctrl-C to stop" . PHP_EOL;
+        \Yii::info('Escuchando desde: ' . date('l jS \of F Y h:i:s A') . "\n", 'pasarela');
 
         $buffer = '';
 
-        while (true) {
+        while (1) 
+        {
+            echo "\nWaiting for data ... \n";
+
             try{
                 socket_recvfrom($socket, $buffer, 65535, 0, $clientIP, $clientPort);
             } catch (ErrorException $e) {
-                echo "Error en el buffer 0".$e;
+                $message .= ": " . socket_strerror(socket_last_error($socket));
+                echo "\n Error en el buffer 0".$message;
+                echo "\n Error en el buffer 00".$e;
             } catch (Exception $e) {
-                echo "Error en el buffer 1".$e;
+                $message .= ": " . socket_strerror(socket_last_error($socket));
+                echo "\n Error en el buffer I".$message;
+                echo "\n Error en el buffer II".$e;
             }
             if(strlen($buffer)>0)//here getting zero legth data
             {
