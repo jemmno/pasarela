@@ -10,6 +10,8 @@ namespace app\commands;
 use app\models\Vehiculo;
 use codemix\yii2confload\Config;
 use yii\console\Controller;
+use yii\base\ErrorException;
+use yii\base\Exception;
 
 require "utils/parser.php";
 require "utils/trama_hawk.php";
@@ -72,6 +74,12 @@ class PasarelaController extends Controller
                 $message .= ": " . socket_strerror(socket_last_error($socket));
                 echo "\n Error en el buffer 0" . $message;
                 echo "\n Error en el buffer 00" . $e;
+                if ($e->getCode() == 4) //  4 == EINTR, interrupted system call (Ctrl+C will interrupt the blocking call as well)
+                {
+                    usleep(1); //  Don't just continue, otherwise the ticks function won't be processed, and the signal will be ignored, try it!
+                    continue; //  Ignore it, if our signal handler caught the interrupt as well, the $running flag will be set to false, so we'll break out
+                }
+                throw $e; //  It's another exception, don't hide it to the user
             } catch (Exception $e) {
                 $message .= ": " . socket_strerror(socket_last_error($socket));
                 echo "\n Error en el buffer I" . $message;
