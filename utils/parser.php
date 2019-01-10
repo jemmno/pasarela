@@ -33,6 +33,38 @@ function parsear($trama){
 }
 
 /**
+ * formato trama coban 103b+
+ * imei:864180030811405,tracker,190110184525,,F,184520.000,A,2514.6781,S,05742.4114,W,38.11,43.86,,1,0,0.00%,,;
+ * imei:XXXXXXXXXXXXXXXX, your IMEI
+ * tracker, this is position message
+ * 1206081637, UTC Date and Time : YYMMDDHHMM
+ * , not identified, always saw this one as empty
+ * F, F:Fix (GPS is locked and has position) L: Lost (GPS is unlocked)
+ * 193729.000, Time : HHMMSS.mmm Probably local time. Have you configured a time-zone ? I haven't and in my case this is also UTC
+ * A, not identified, always saw this one as "A"
+ * 1249.9238,S, 12° 49.9328' South
+ * 03816.1788,W, 003° 16.1788' West
+ * 0.01, speed in notch (nautic miles per hours)
+ * 303.36; This one is empty on my tracker. May be altitude ? feet or meters ?
+ */
+function parsear103bPlus($trama){
+    $imei = '';
+    list($imei, $tracker, $UTCDateTime, $empty, $statusGPS, $time, $alwaysA, $lat, $latO, $lng, $lngO, $speed) = explode(",", $trama);
+    $imei = explode(':', $imei)[1];
+    echo "lat $lat lng $lng". PHP_EOL;
+
+    $speed = IsNullOrEmptyString($speed) ? 0 : $speed;
+    
+    if (is_numeric($lat) && is_numeric($lng)) {
+        $latitude = convertToGoogleMapsFormat($lat, $latO, 'lat');
+        $longitude = convertToGoogleMapsFormat($lng, $lngO, 'lng');
+    }else{
+        //retornar error de no ubicacion
+    }
+    return array($imei, $latitude, $longitude, $speed, $UTCDateTime);
+}
+
+/**
  * format is in ddmm.mmmm (lat) and dddmm.mmmm (lng)
  * Take the dd (lat) or ddd (lng) and add it to (mm.mmmm / 60.0).
  * If the lat value is followed by S you have to multiply it with -1. 

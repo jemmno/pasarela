@@ -131,6 +131,9 @@ class PasarelaController extends Controller
                         //de momento parsear como un coban 102
                         list($imei, $lat, $lng, $speed, $UTCDateTime) = parsear($datagram);
                         break;
+                    case '103b+':
+                        list($imei, $lat, $lng, $speed, $UTCDateTime) = parsear103bPlus($datagram);
+                        break;
                     default:
                         echo "### no tiene modelo gps" . PHP_EOL;
                 }
@@ -183,6 +186,9 @@ class PasarelaController extends Controller
     //verifica que la trama recibida no sea un Heartbeat
     public function isHeartbeat($datagram)
     {
-        return substr_count($datagram, ',') !== 12;
+        
+        //12 el 102, 18 comas tiene el 103b+
+        $comas = substr_count($datagram, ',');
+        return  $comas < 12 ;
     }
 }
