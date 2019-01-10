@@ -51,7 +51,8 @@ function parsear($trama){
  */
 function parsear103bPlus($trama){
     $imei = '';
-    list($imei, $tracker, $UTCDateTime, $empty, $statusGPS, $time, $alwaysA, $lat, $latO, $lng, $lngO, $speed, $direction) = explode(",", $trama);
+    list($imei, $tracker, $UTCDateTime, $empty, $statusGPS, $time, $alwaysA, $lat, $latO, $lng, $lngO, $speed, $direction,
+    $altitude, $ACC, $door) = explode(",", $trama);
     $imei = explode(':', $imei)[1];
     echo "lat $lat lng $lng direccion $direction". PHP_EOL;
 
@@ -64,7 +65,7 @@ function parsear103bPlus($trama){
     }else{
         //retornar error de no ubicacion
     }
-    return array($imei, $latitude, $longitude, $speed, $UTCDateTime, $direction);
+    return array($imei, $latitude, $longitude, $speed, $UTCDateTime, $direction, $ACC, $door);
 }
 
 /**

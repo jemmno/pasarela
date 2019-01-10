@@ -19,12 +19,23 @@
  *
  */
 
-function generarTramaHawk($patente, $lat, $lng, $speed, $UTCDateTime, $direction)
+function generarTramaHawk($patente, $lat, $lng, $speed, $UTCDateTime, $direction, $ACC, $door)
 {
     $fecha = formatFecha($UTCDateTime);
     $velocidad = millasNauticasAKmH($speed);
+    $ACC = IsNullOrEmptyString($ACC) ? '' : $ACC;
+    $door = IsNullOrEmptyString($door) ? '' : $door;
+    $evento = mapEvento($ACC, $door);
 
-    return $trama = "HAWK;ID=$patente;$lat;$lng;$velocidad;$direction;$fecha;;1;;;;;";
+    return $trama = "HAWK;ID=$patente;$lat;$lng;$velocidad;$direction;$fecha;$ACC;1;$evento;;;;";
+}
+
+function mapEvento($ACC, $door)
+{
+    $evento = '';
+    if($door == 1) { $evento = 11; }
+    if($door == 0) { $evento = 12; }
+    return $evento;
 }
 
 function formatFecha($UTCDateTime)
