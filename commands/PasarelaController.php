@@ -61,7 +61,7 @@ class PasarelaController extends Controller
 
         echo "Listen on $host:$port" . PHP_EOL;
         echo "press Ctrl-C to stop" . PHP_EOL;
-        \Yii::info('Escuchando desde: ' . date('l jS \of F Y h:i:s A') . "\n", 'pasarela');
+        \Yii::info('Arranque: ','ejecucion');
 
         $buffer = '';
 
@@ -76,6 +76,7 @@ class PasarelaController extends Controller
                 echo "\n Error en el buffer 00" . $e;
                 if ($e->getCode() == 4) //  4 == EINTR, interrupted system call (Ctrl+C will interrupt the blocking call as well)
                 {
+                    \Yii::info('Parada: interrupted system call','ejecucion');
                     usleep(1); //  Don't just continue, otherwise the ticks function won't be processed, and the signal will be ignored, try it!
                     continue; //  Ignore it, if our signal handler caught the interrupt as well, the $running flag will be set to false, so we'll break out
                 }
@@ -97,6 +98,8 @@ class PasarelaController extends Controller
             }
 
         }
+
+        \Yii::info('Parada ctrl c: ','ejecucion');
 
         /**
          * Trigger an exception with the last socket error.
