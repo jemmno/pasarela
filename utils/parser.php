@@ -55,8 +55,8 @@ function parsear103bPlus($trama){
     $imei = explode(':', $imei)[1];
     echo "lat $lat lng $lng direccion $direction". PHP_EOL;
 
-    $speed = IsNullOrEmptyString($speed) ? 0 : $speed;
-    $direction = IsNullOrEmptyString($direction) ? 0 : $direction;
+    $speed = IsNullOrEmptyString($speed) ? '' : $speed;
+    $direction = IsNullOrEmptyString($direction) ? '' : $direction;
     
     if (is_numeric($lat) && is_numeric($lng)) {
         $latitude = convertToGoogleMapsFormat($lat, $latO, 'lat');
