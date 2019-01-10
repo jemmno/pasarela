@@ -19,12 +19,12 @@
  *
  */
 
-function generarTramaHawk($patente, $lat, $lng, $speed, $UTCDateTime)
+function generarTramaHawk($patente, $lat, $lng, $speed, $UTCDateTime, $direction)
 {
     $fecha = formatFecha($UTCDateTime);
     $velocidad = millasNauticasAKmH($speed);
 
-    return $trama = "HAWK;ID=$patente;$lat;$lng;$velocidad;;$fecha;;1;;;;;";
+    return $trama = "HAWK;ID=$patente;$lat;$lng;$velocidad;$direction;$fecha;;1;;;;;";
 }
 
 function formatFecha($UTCDateTime)

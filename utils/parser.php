@@ -17,11 +17,13 @@
  */
 function parsear($trama){
     $imei = '';
-    list($imei, $tracker, $UTCDateTime, $empty, $statusGPS, $time, $alwaysA, $lat, $latO, $lng, $lngO, $speed) = explode(",", $trama);
+    list($imei, $tracker, $UTCDateTime, $empty, $statusGPS, $time, $alwaysA, $lat, $latO, $lng, $lngO, $speed, $direction) = explode(",", $trama);
     $imei = explode(':', $imei)[1];
+    $direction = substr($direction,0,-1); //elimina el ; al final
     echo "lat $lat lng $lng". PHP_EOL;
 
     $speed = IsNullOrEmptyString($speed) ? 0 : $speed;
+    $direction = IsNullOrEmptyString($direction) ? 0 : $direction;
     
     if (is_numeric($lat) && is_numeric($lng)) {
         $latitude = convertToGoogleMapsFormat($lat, $latO, 'lat');
@@ -29,7 +31,7 @@ function parsear($trama){
     }else{
         //retornar error de no ubicacion
     }
-    return array($imei, $latitude, $longitude, $speed, $UTCDateTime);
+    return array($imei, $latitude, $longitude, $speed, $UTCDateTime, $direction);
 }
 
 /**
@@ -45,15 +47,16 @@ function parsear($trama){
  * 1249.9238,S, 12° 49.9328' South
  * 03816.1788,W, 003° 16.1788' West
  * 0.01, speed in notch (nautic miles per hours)
- * 303.36; This one is empty on my tracker. May be altitude ? feet or meters ?
+ * 303.36 Direction
  */
 function parsear103bPlus($trama){
     $imei = '';
-    list($imei, $tracker, $UTCDateTime, $empty, $statusGPS, $time, $alwaysA, $lat, $latO, $lng, $lngO, $speed) = explode(",", $trama);
+    list($imei, $tracker, $UTCDateTime, $empty, $statusGPS, $time, $alwaysA, $lat, $latO, $lng, $lngO, $speed, $direction) = explode(",", $trama);
     $imei = explode(':', $imei)[1];
-    echo "lat $lat lng $lng". PHP_EOL;
+    echo "lat $lat lng $lng direccion $direction". PHP_EOL;
 
     $speed = IsNullOrEmptyString($speed) ? 0 : $speed;
+    $direction = IsNullOrEmptyString($direction) ? 0 : $direction;
     
     if (is_numeric($lat) && is_numeric($lng)) {
         $latitude = convertToGoogleMapsFormat($lat, $latO, 'lat');
@@ -61,7 +64,7 @@ function parsear103bPlus($trama){
     }else{
         //retornar error de no ubicacion
     }
-    return array($imei, $latitude, $longitude, $speed, $UTCDateTime);
+    return array($imei, $latitude, $longitude, $speed, $UTCDateTime, $direction);
 }
 
 /**

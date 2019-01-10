@@ -122,17 +122,18 @@ class PasarelaController extends Controller
 
             list($patente, $gps) = self::findPatente($imei);
             $lat = null;
+            echo "\n modelo gps $gps";
             if (!self::isHeartbeat($datagram)) {
                 switch ($gps) {
-                    case 102:
-                        list($imei, $lat, $lng, $speed, $UTCDateTime) = parsear($datagram);
+                    case '102':
+                        list($imei, $lat, $lng, $speed, $UTCDateTime, $direction) = parsear($datagram);
                         break;
-                    case 103:
+                    case '103':
                         //de momento parsear como un coban 102
-                        list($imei, $lat, $lng, $speed, $UTCDateTime) = parsear($datagram);
+                        list($imei, $lat, $lng, $speed, $UTCDateTime, $direction) = parsear($datagram);
                         break;
                     case '103b+':
-                        list($imei, $lat, $lng, $speed, $UTCDateTime) = parsear103bPlus($datagram);
+                        list($imei, $lat, $lng, $speed, $UTCDateTime, $direction) = parsear103bPlus($datagram);
                         break;
                     default:
                         echo "### no tiene modelo gps" . PHP_EOL;
@@ -145,7 +146,7 @@ class PasarelaController extends Controller
                 echo "no se encontro patente del vehiculo" . PHP_EOL;
             } else {
                 echo "patente del vehiculo $patente" . PHP_EOL;
-                $tramaHawk = generarTramaHawk($patente, $lat, $lng, $speed, $UTCDateTime);
+                $tramaHawk = generarTramaHawk($patente, $lat, $lng, $speed, $UTCDateTime, $direction);
                 \Yii::info('Posición recibida... imei= ' . $imei . ', patente= ' . $patente . ', posición= ' . $lat . ', ' . $lng . "\n", 'pasarela');
                 print_r($tramaHawk);
                 send($tramaHawk);
