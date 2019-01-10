@@ -115,6 +115,7 @@ class PasarelaController extends Controller
 
     public function handleDatagram($datagram)
     {
+        send_local($datagram);
         $tramaHawk = '';
         $imei = self::get_imei($datagram);
         if ($imei != '') {
@@ -145,7 +146,6 @@ class PasarelaController extends Controller
                 \Yii::info('Posición recibida... imei= ' . $imei . ', patente= ' . $patente . ', posición= ' . $lat . ', ' . $lng . "\n", 'pasarela');
                 print_r($tramaHawk);
                 send($tramaHawk);
-                send_local($datagram);
             }
         }
     }
