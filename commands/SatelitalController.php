@@ -6,8 +6,7 @@ use codemix\yii2confload\Config;
 use yii\console\Controller;
 use yii\httpclient\Client;
 
-require "utils/parser.php";
-require "utils/trama_hawk.php";
+require "utils/trama_coban.php";
 require "utils/sendUDP.php";
 
 class SatelitalController extends Controller
@@ -96,18 +95,20 @@ class SatelitalController extends Controller
     {
         //echo "Return messages: ";
         $messages = json_decode(json_encode($this->result['Messages']), true);
-        //print_r($messages);
+        print_r($messages);
         $mensaje = new \stdClass(); 
         if (is_array($messages)) {
             foreach ($messages as $message) {
                 $mensaje->mobileID = $message['MobileID'];
+                $mensaje->messageUTC = $message['MessageUTC'];
                 $fields = $message['Payload']['Fields'];
                 foreach ($fields as $field) {
                     $filedName = $field['Name'];
                     $mensaje->$filedName = $field['Value'];
                 }
             }
-            print_r($mensaje);
+            // $tramaCoban = generarTramaCoban($mensaje);
+            // send_local($tramaCoban);
         }
     }
 
