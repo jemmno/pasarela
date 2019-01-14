@@ -45,9 +45,7 @@ class SatelitalController extends Controller
             if ($this->result != null && json_encode($this->result['ErrorID']) == 0) {
                 // Extract from-mobile message
                 if (json_encode($this->result['Messages']) != null && strlen(json_encode($this->result['Messages'])) > 0) {
-                    echo "Return messages: ";
-                    echo json_encode($this->result['Messages'])."\n";
-                    // TO-DO procesar
+                    $this->procesarMessages($this->result['Messages']);
                 }
 
                 // Get filter values for next poll. If no message were returned,
@@ -92,6 +90,17 @@ class SatelitalController extends Controller
             echo "mensaje recibido: ".json_encode($response->data)."\n\n\n\n";
             return $response->data;
         }
+    }
+
+    private function procesarMessages($messages)
+    {
+        echo "Return messages: ";
+        //echo json_encode($this->result['Messages'])."\n";
+        $messagesArray = json_decode(json_encode($this->result['Messages'], true));
+        // foreach (json_decode($this->result['Messages'], true) as $message) {
+        //     echo $message."\n";
+        // }
+        echo print_r($messagesArray[0]->Payload);
     }
 
 }
