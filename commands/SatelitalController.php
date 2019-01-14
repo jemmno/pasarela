@@ -56,9 +56,9 @@ class SatelitalController extends Controller
                     // call will return the same messages you already get
                     $horaUTC = self::getCurrentGatewayTime();
                 } else {
-                    echo "No new messages received, at: " . date('d-m-Y H:i:s')."\n";
+                    echo "No new messages received, at: " . date('d-m-Y H:i:s') . "\n";
                 }
-            }else if($this->result != null){
+            } else if ($this->result != null) {
                 echo "Error calling GetReturnMessages \n";
             }
             // Wait before polling web service again. If you call one of Get
@@ -87,20 +87,28 @@ class SatelitalController extends Controller
         //print_r($params);
         $response = $this->client->get('get_return_messages.json', $params)->send();
         if ($response->isOk) {
-            echo "mensaje recibido: ".json_encode($response->data)."\n\n\n\n";
+            echo "mensaje recibido: " . json_encode($response->data) . "\n\n\n\n";
             return $response->data;
         }
     }
 
     private function procesarMessages($messages)
     {
-        echo "Return messages: ";
-        //echo json_encode($this->result['Messages'])."\n";
-        $messagesArray = json_decode(json_encode($this->result['Messages'], true));
-        // foreach (json_decode($this->result['Messages'], true) as $message) {
-        //     echo $message."\n";
-        // }
-        echo print_r($messagesArray[0]->Payload);
+        //echo "Return messages: ";
+        $messages = json_decode(json_encode($this->result['Messages']), true);
+        //print_r($messages);
+        $mensaje = new \stdClass(); 
+        if (is_array($messages)) {
+            foreach ($messages as $message) {
+                $mensaje->mobileID = $message['MobileID'];
+                $fields = $message['Payload']['Fields'];
+                foreach ($fields as $field) {
+                    $filedName = $field['Name'];
+                    $mensaje->$filedName = $field['Value'];
+                }
+            }
+            print_r($mensaje);
+        }
     }
 
 }
