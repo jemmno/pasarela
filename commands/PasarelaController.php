@@ -11,11 +11,11 @@ use app\models\Vehiculo;
 use codemix\yii2confload\Config;
 use yii\console\Controller;
 use yii\base\ErrorException;
-use yii\base\Exception;
+use \Exception;
 
-require "utils/parser.php";
-require "utils/trama_hawk.php";
-require "utils/sendUDP.php";
+require "/var/www/pasarela/utils/parser.php";
+require "/var/www/pasarela/utils/trama_hawk.php";
+require "/var/www/pasarela/utils/sendUDP.php";
 
 /**
  * This command echoes the first argument that you have entered.
@@ -70,7 +70,7 @@ class PasarelaController extends Controller
 
             try {
                 socket_recvfrom($socket, $buffer, 65535, 0, $clientIP, $clientPort);
-            } catch (ErrorException $e) {
+            } catch (Exception $e) {
                 $message .= ": " . socket_strerror(socket_last_error($socket));
                 echo "\n Error en el buffer 0" . $message;
                 echo "\n Error en el buffer 00" . $e;
@@ -80,7 +80,7 @@ class PasarelaController extends Controller
                     continue; //  Ignore it, if our signal handler caught the interrupt as well, the $running flag will be set to false, so we'll break out
                 }
                 throw $e; //  It's another exception, don't hide it to the user
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $message .= ": " . socket_strerror(socket_last_error($socket));
                 echo "\n Error en el buffer I" . $message;
                 echo "\n Error en el buffer II" . $e;
@@ -115,42 +115,49 @@ class PasarelaController extends Controller
 
     public function handleDatagram($datagram)
     {
-        send_local($datagram);
-        $tramaHawk = '';
-        $imei = self::get_imei($datagram);
-        if ($imei != '') {
+        try {
+            send_local($datagram);
+            $tramaHawk = '';
+            $imei = self::get_imei($datagram);
+            if ($imei != '') {
 
-            list($patente, $gps) = self::findPatente($imei);
-            $lat = null; $ACC = null; $door = null;
-            echo "\n modelo gps $gps";
-            if (!self::isHeartbeat($datagram)) {
-                switch ($gps) {
-                    case '102':
-                        list($imei, $lat, $lng, $speed, $UTCDateTime, $direction) = parsear($datagram);
-                        break;
-                    case '103':
-                        //de momento parsear como un coban 102
-                        list($imei, $lat, $lng, $speed, $UTCDateTime, $direction) = parsear($datagram);
-                        break;
-                    case '103b+':
-                        list($imei, $lat, $lng, $speed, $UTCDateTime, $direction, $ACC, $door) = parsear103bPlus($datagram);
-                        break;
-                    default:
-                        echo "### no tiene modelo gps" . PHP_EOL;
+                list($patente, $gps) = self::findPatente($imei);
+                $lat = null;
+                $ACC = null;
+                $door = null;
+                echo "\n modelo gps $gps";
+                if (!self::isHeartbeat($datagram)) {
+                    switch ($gps) {
+                        case '102':
+                            list($imei, $lat, $lng, $speed, $UTCDateTime, $direction) = parsear($datagram);
+                            break;
+                        case '103':
+                            //de momento parsear como un coban 102
+                            list($imei, $lat, $lng, $speed, $UTCDateTime, $direction) = parsear($datagram);
+                            break;
+                        case '103b+':
+                            list($imei, $lat, $lng, $speed, $UTCDateTime, $direction, $ACC, $door) = parsear103bPlus($datagram);
+                            break;
+                        default:
+                            echo "### no tiene modelo gps" . PHP_EOL;
+                    }
+                } else {
+                    echo "\n Recibio un Heartbeat o formato inadecuado" . PHP_EOL;
                 }
-            } else {
-                echo "\n Recibio un Heartbeat o formato inadecuado" . PHP_EOL;
-            }
 
-            if (is_null($patente) or is_null($lat)) {
-                echo "no se encontro patente del vehiculo" . PHP_EOL;
-            } else {
-                echo "patente del vehiculo $patente" . PHP_EOL;
-                $tramaHawk = generarTramaHawk($patente, $lat, $lng, $speed, $UTCDateTime, $direction, $ACC, $door);
-                \Yii::info('Posición recibida... imei= ' . $imei . ', patente= ' . $patente . ', posición= ' . $lat . ', ' . $lng . "\n", 'pasarela');
-                print_r($tramaHawk);
-                send($tramaHawk);
+                if (is_null($patente) or is_null($lat)) {
+                    echo "no se encontro patente del vehiculo" . PHP_EOL;
+                } else {
+                    echo "patente del vehiculo $patente" . PHP_EOL;
+                    $tramaHawk = generarTramaHawk($patente, $lat, $lng, $speed, $UTCDateTime, $direction, $ACC, $door);
+                    \Yii::info('Posición recibida... imei= ' . $imei . ', patente= ' . $patente . ', posición= ' . $lat . ', ' . $lng . "\n", 'pasarela');
+                    print_r($tramaHawk);
+                    send($tramaHawk);
+                }
             }
+        } catch (\Exception $e) {
+            $time = time();
+             throw new \Exception("{$time} - {$e}");
         }
     }
 
