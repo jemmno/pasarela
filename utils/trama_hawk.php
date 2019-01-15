@@ -49,6 +49,7 @@ function formatFecha($UTCDateTime)
     $seg = (int) substr($input, 10, 2);
 
     $date_obj = new DateTime($year . '-' . $month . '-' . $date . ' ' . $hour . ':' . $minute . '.' . $seg);
+    $date_obj->modify('-3 hour');
     return $date_obj->format('Y/m/d H:i.s');
 }
 
