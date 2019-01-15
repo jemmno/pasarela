@@ -44,6 +44,8 @@ $config = [
                     'categories' => ['pasarela'],
                     'logVars' => [],
                     'logFile' => '@runtime/logs/pasarela.log',
+                    'maxFileSize' => 5120,
+                    'maxLogFiles' => 100,
                 ],
                 [
                     'class' => 'yii\log\FileTarget',
@@ -52,6 +54,8 @@ $config = [
                     'categories' => ['global'],
                     'logVars' => [],
                     'logFile' => '@runtime/logs/global.log',
+                    'maxFileSize' => 5120,
+                    'maxLogFiles' => 100,
                 ],
                 [
                     'class' => 'yii\log\FileTarget',
