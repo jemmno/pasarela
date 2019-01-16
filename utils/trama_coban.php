@@ -26,49 +26,25 @@ function generarTramaCoban($mensaje)
     $velocidad = $mensaje->speed;
     $fecha = $mensaje->messageUTC;
     $orientacion = $mensaje->heading;
-    return $trama = "imei:$id,tracker,$id,,F,$lat,$lng,$velocidad,$orientacion";
+    $latlng = convertDD2NMEAFormat($lat,$lng);
+    return $trama = "imei:$id,tracker,$fecha,,F,,$latlng,$velocidad,$orientacion";
 }
 
-function formatFecha($UTCDateTime)
-{
-    $input = $UTCDateTime; // 181017205423
-    $year = (int) substr($input, 0, 2);
-    $month = (int) substr($input, 2, 2);
-    $date = (int) substr($input, 4, 2);
-    $hour = (int) substr($input, 6, 2);
-    $minute = (int) substr($input, 8, 2);
-    $seg = (int) substr($input, 10, 2);
-
-    $date_obj = new DateTime($year . '-' . $month . '-' . $date . ' ' . $hour . ':' . $minute . '.' . $seg);
-    return $date_obj->format('Y/m/d H:i.s');
-}
-
-function millasNauticasAKmH($speed)
-{
-    //1km/h = 1.852 milla nautica
-    return $speed * 1.852;
-}
-
-/**
- * format is in ddmm.mmmm (lat) and dddmm.mmmm (lng)
- * Take the dd (lat) or ddd (lng) and add it to (mm.mmmm / 60.0).
- * If the lat value is followed by S you have to multiply it with -1. 
- * If the lng value is followed by a W, multiply it with -1.
- * e.g.: lat: 5722.5915 -> 57 + (22.5915 / 60) = 57.376525
- */
 function convertDD2NMEAFormat($lat, $lng){
-    $nmea = "";
-    $lata = abs(Abs($lat/60000));
-    $latd = abs(Truncate)($lata);
+    $nmea = $nmelat = $nmealng = "";
+    $lata = abs((float)$lat/60000); //le quita el signo
+    $latd = intval($lata); //obtiene la parte entera del float
     $latm = ($lata - $latd) * 60;
     $lath = $lat > 0 ? "N" : "S";
-    $lnga = abs(Abs($lng/60000));
-    $lngd = abs(Truncate)($lnga);
+    
+    $lnga = abs((float)$lng/60000);
+    $lngd = intval($lnga);
     $lngm = ($lnga - $lngd) * 60;
     $lngh = $lng > 0 ? "E" : "W";
 
-    $nmea += $latd.ToString("00") + $latm.ToString("00.00000") + "," + $lath + ",";
-    $nmea += $lngd.ToString("000") + $lngm.ToString("00.00000") + "," + $lngh;
+    $nmelat = round($latd).$latm . ",". $lath;
+    $nmealng = round($lngd).$lngm . "," . $lngh;
+    $nmea = $nmelat.','.$nmealng;
 
-    return nmea;
+    return $nmea;
 }

@@ -123,7 +123,7 @@ class PasarelaController extends Controller
             \Yii::info('Posición recibida... imei= ' . $imei . ', patente= ' . $patente . ', posición= ' . $lat . ', ' . $lng . "\n", 'pasarela');
             print_r($tramaHawk);
             send($tramaHawk);
-            send_local($datagram);
+            send_local($datagram, 'pasarela');
         }
     }
 

@@ -17,7 +17,9 @@ $config = [
                 //'Frontend Errors' => '@frontend/runtime/logs/app.log',
                 //'Backend Errors' => '@backend/runtime/logs/app.log',
                 'Pasarela' => '@runtime/logs/pasarela.log',
+                'Satelital' => '@runtime/logs/satelital.log',
                 'Global' => '@runtime/logs/global.log',
+
             ],
         ],
     ],

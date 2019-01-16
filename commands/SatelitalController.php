@@ -16,7 +16,7 @@ class SatelitalController extends Controller
     public $password = '';
     public $credenciales = [];
     // Delay between two consecutive GetMessages calls
-    public $delayInSeconds = 30;
+    public $delayInSeconds = 32;
     public $result = '';
 
     public function init()
@@ -56,6 +56,7 @@ class SatelitalController extends Controller
                     $horaUTC = self::getCurrentGatewayTime();
                 } else {
                     echo "No new messages received, at: " . date('d-m-Y H:i:s') . "\n";
+                    \Yii::info('Preguntando...' .date('d-m-Y H:i:s'). "\n", 'satelital');
                 }
             } else if ($this->result != null) {
                 echo "Error calling GetReturnMessages \n";
@@ -94,16 +95,15 @@ class SatelitalController extends Controller
     private function procesarMessages($messages)
     {
         // prueba conversion DD a NMEA
-        echo "\n coord convertida".convertDD2NMEAFormat('-1525916', '-3453192');
+        //echo "\n coord convertida: ".convertDD2NMEAFormat('-1525916', '-3453192')."\n";
 
-        //echo "Return messages: ";
         $messages = json_decode(json_encode($this->result['Messages']), true);
         print_r($messages);
         $mensaje = new \stdClass(); 
         if (is_array($messages)) {
             foreach ($messages as $message) {
                 $mensaje->mobileID = $message['MobileID'];
-                $mensaje->messageUTC = $message['MessageUTC'];
+                $mensaje->messageUTC = preg_replace('/[\-\:\s+]/', '', $message['MessageUTC']);
                 $fields = $message['Payload']['Fields'];
                 foreach ($fields as $field) {
                     $filedName = $field['Name'];
@@ -111,7 +111,9 @@ class SatelitalController extends Controller
                 }
             }
             $tramaCoban = generarTramaCoban($mensaje);
-            send_local($tramaCoban);
+            \Yii::info('Posición recibida...' .print_r($mensaje). "\n", 'satelital');
+
+            send_local($tramaCoban, 'satelital');
         }
     }
 
