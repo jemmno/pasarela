@@ -8,7 +8,7 @@
 namespace app\commands;
 
 use app\models\Vehiculo;
-use codemix\yii2confload\Config;
+use app\models\Config;
 use yii\console\Controller;
 use yii\base\ErrorException;
 use \Exception;
@@ -16,6 +16,10 @@ use \Exception;
 require "/var/www/pasarela/utils/parser.php";
 require "/var/www/pasarela/utils/trama_hawk.php";
 require "/var/www/pasarela/utils/sendUDP.php";
+// require "utils/parser.php";
+// require "utils/trama_hawk.php";
+// require "utils/sendUDP.php";
+
 
 /**
  * This command echoes the first argument that you have entered.
@@ -33,11 +37,33 @@ class PasarelaController extends Controller
      * @param string $message the message to be echoed.
      * @return int Exit code
      */
-    public function actionEscuchar()
+
+        public $local_ip_forward = '';
+        public $local_port_forward = '';
+        public $port_forward = '';
+        public $ip_forward = '';
+        public $dif_horaria = '';
+
+     public function actionEscuchar()
     {
-        // conf socket
-        $port = Config::env('PORT_LISTEN', '7778');
-        $host = Config::env('IP_LISTEN', '127.0.0.1');
+        try {
+            $conf = Config::find()->one();
+
+            // conf socket
+            $port = $conf->port_listen;
+            $host = $conf->ip_listen;
+            // local
+            $this->local_port_forward = $conf->local_port_forward;
+            $this->local_ip_forward = $conf->local_ip_forward;
+            // externo
+            $this->port_forward = $conf->port_forward;
+            $this->ip_forward = $conf->ip_forward;
+            // dif horaria
+            $this->dif_horaria = $conf->dif_horaria;
+        } catch (\Throwable $th) {
+            die('No se pudo obtener configuración de puerto de escucha! '.$th);
+        }
+       
 
         if (!extension_loaded('sockets')) {
             die('The sockets extension is not loaded.');
@@ -119,7 +145,7 @@ class PasarelaController extends Controller
     public function handleDatagram($datagram)
     {
         try {
-            send_local($datagram);
+            send_local($datagram, $this->local_ip_forward, $this->local_port_forward);
             $tramaHawk = '';
             $imei = self::get_imei($datagram);
             if ($imei != '') {
@@ -152,10 +178,10 @@ class PasarelaController extends Controller
                     echo "no se encontro patente del vehiculo" . PHP_EOL;
                 } else {
                     echo "patente del vehiculo $patente" . PHP_EOL;
-                    $tramaHawk = generarTramaHawk($patente, $lat, $lng, $speed, $UTCDateTime, $direction, $ACC, $door);
+                    $tramaHawk = generarTramaHawk($patente, $lat, $lng, $speed, $UTCDateTime, $direction, $ACC, $door, $this->dif_horaria);
                     \Yii::info('Posición recibida... imei= ' . $imei . ', patente= ' . $patente . ', posición= ' . $lat . ', ' . $lng . "\n", 'pasarela');
                     print_r($tramaHawk);
-                    send($tramaHawk);
+                    send($tramaHawk,$this->ip_forward,$this->port_forward);
                 }
             }
         } catch (\Exception $e) {
@@ -175,12 +201,6 @@ class PasarelaController extends Controller
         }
     }
 
-    public function actionTest()
-    {
-        $connection = \Yii::$app->db;
-        $vehiculo = Vehiculo::findOne(['imei' => 1234567890]);
-        print_r($vehiculo->patente);
-    }
 
     public function get_imei($str)
     {
