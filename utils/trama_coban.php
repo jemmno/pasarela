@@ -18,10 +18,15 @@
 
 function generarTramaCoban($mensaje)
 {
-    $fecha = formatFecha($UTCDateTime);
-    $velocidad = millasNauticasAKmH($speed);
+    // $fecha = formatFecha($UTCDateTime);
+    // $velocidad = millasNauticasAKmH($speed);
     $id = $mensaje->mobileID;
-    return $trama = "imei:;ID=$id;$lat;$lng;$velocidad;;$fecha;;1;;;;;";
+    $lat = $mensaje->latitude;
+    $lng = $mensaje->longitude;
+    $velocidad = $mensaje->speed;
+    $fecha = $mensaje->messageUTC;
+    $orientacion = $mensaje->heading;
+    return $trama = "imei:$id,tracker,$id,,F,$lat,$lng,$velocidad,$orientacion";
 }
 
 function formatFecha($UTCDateTime)
@@ -53,17 +58,17 @@ function millasNauticasAKmH($speed)
  */
 function convertDD2NMEAFormat($lat, $lng){
     $nmea = "";
-    $lata = abs(Abs($lat));
+    $lata = abs(Abs($lat/60000));
     $latd = abs(Truncate)($lata);
-//  $latm = (lata - latd) * 60;
-// string lath = lat > 0 ? "N" : "S";
-//  $lnga = abs(Abs(lng));
-//  $lngd = abs(Truncate)(lnga);
-//  $lngm = (lnga - lngd) * 60;
-// string lngh = lng > 0 ? "E" : "W";
+    $latm = ($lata - $latd) * 60;
+    $lath = $lat > 0 ? "N" : "S";
+    $lnga = abs(Abs($lng/60000));
+    $lngd = abs(Truncate)($lnga);
+    $lngm = ($lnga - $lngd) * 60;
+    $lngh = $lng > 0 ? "E" : "W";
 
-// nmea += latd.ToString("00") + latm.ToString("00.00000") + "," + lath + ",";
-// nmea += lngd.ToString("000") + lngm.ToString("00.00000") + "," + lngh;
+    $nmea += $latd.ToString("00") + $latm.ToString("00.00000") + "," + $lath + ",";
+    $nmea += $lngd.ToString("000") + $lngm.ToString("00.00000") + "," + $lngh;
 
-return nmea;
+    return nmea;
 }

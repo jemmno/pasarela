@@ -93,6 +93,9 @@ class SatelitalController extends Controller
 
     private function procesarMessages($messages)
     {
+        // prueba conversion DD a NMEA
+        echo "\n coord convertida".convertDD2NMEAFormat('-1525916', '-3453192');
+
         //echo "Return messages: ";
         $messages = json_decode(json_encode($this->result['Messages']), true);
         print_r($messages);
@@ -107,8 +110,8 @@ class SatelitalController extends Controller
                     $mensaje->$filedName = $field['Value'];
                 }
             }
-            // $tramaCoban = generarTramaCoban($mensaje);
-            // send_local($tramaCoban);
+            $tramaCoban = generarTramaCoban($mensaje);
+            send_local($tramaCoban);
         }
     }
 
