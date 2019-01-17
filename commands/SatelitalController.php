@@ -7,8 +7,10 @@ use yii\httpclient\Client;
 use app\models\Config;
 use app\models\Vehiculo;
 
-require "utils/trama_coban.php";
-require "utils/sendUDP.php";
+// require "utils/trama_coban.php";
+// require "utils/sendUDP.php";
+require "/var/www/pasarela/utils/trama_coban.php";
+require "/var/www/pasarela/utils/sendUDP.php";
 
 class SatelitalController extends Controller
 {
