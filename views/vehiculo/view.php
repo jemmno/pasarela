@@ -33,6 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'imei',
             'gps',
             'descripcion:ntext',
+            'id_satelital'
         ],
     ]) ?>
 

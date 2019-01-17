@@ -34,6 +34,8 @@ class Vehiculo extends \yii\db\ActiveRecord
             [['descripcion'], 'string'],
             [['patente'], 'string', 'max' => 12],
             [['gps'], 'string', 'max' => 12],
+            [['id_satelital'], 'string', 'max' => 16],
+
         ];
     }
 
@@ -47,7 +49,8 @@ class Vehiculo extends \yii\db\ActiveRecord
             'patente' => 'Patente',
             'imei' => 'Imei',
             'descripcion' => 'Descripción',
-            'gps' => 'Modelo GPS'
+            'gps' => 'Modelo GPS',
+            'id_satelital' => 'Id Satelital'
         ];
     }
 }

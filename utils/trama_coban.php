@@ -20,14 +20,14 @@ function generarTramaCoban($mensaje)
 {
     // $fecha = formatFecha($UTCDateTime);
     // $velocidad = millasNauticasAKmH($speed);
-    $id = $mensaje->mobileID;
+    $imei = $mensaje->imei;
     $lat = $mensaje->latitude;
     $lng = $mensaje->longitude;
     $velocidad = $mensaje->speed;
     $fecha = $mensaje->messageUTC;
     $orientacion = $mensaje->heading;
     $latlng = convertDD2NMEAFormat($lat,$lng);
-    return $trama = "imei:$id,tracker,$fecha,,F,,$latlng,$velocidad,$orientacion";
+    return $trama = "imei:$imei,tracker,$fecha,,F,,$latlng,$velocidad,$orientacion";
 }
 
 function convertDD2NMEAFormat($lat, $lng){

@@ -19,7 +19,7 @@ class VehiculoSearch extends Vehiculo
     {
         return [
             [['id', 'imei'], 'integer'],
-            [['patente', 'descripcion'], 'safe'],
+            [['gps', 'patente', 'descripcion', 'id_satelital'], 'safe'],
         ];
     }
 

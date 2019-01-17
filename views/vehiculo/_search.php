@@ -21,6 +21,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'imei') ?>
 
+    <?= $form->field($model, 'gps') ?>
+
     <?= $form->field($model, 'descripcion') ?>
 
     <div class="form-group">

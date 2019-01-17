@@ -18,9 +18,11 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'descripcion')->textarea(['rows' => 6]) ?>
 
-    <?php $var = [ '102' => 'tk102', '103' => 'tk103', '103b+' => 'tk103b+' ]; ?>
+    <?php $var = [ '102' => 'tk102', '103' => 'tk103', '103b+' => 'tk103b+', 'satelital' => 'satelital' ]; ?>
 
     <?= $form->field($model, 'gps')->dropDownList($var, ['prompt' => 'Seleccione modelo GPS' ]); ?>
+
+    <?= $form->field($model, 'id_satelital')->textInput()->hint('Id en caso de ser rastreador satelital') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

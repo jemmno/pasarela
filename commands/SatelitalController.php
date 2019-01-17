@@ -5,6 +5,7 @@ namespace app\commands;
 use yii\console\Controller;
 use yii\httpclient\Client;
 use app\models\Config;
+use app\models\Vehiculo;
 
 require "utils/trama_coban.php";
 require "utils/sendUDP.php";
@@ -115,6 +116,7 @@ class SatelitalController extends Controller
         $mensaje = new \stdClass(); 
         if (is_array($messages)) {
             foreach ($messages as $message) {
+                $imei = null;
                 $mensaje->mobileID = $message['MobileID'];
                 $mensaje->messageUTC = preg_replace('/[\-\:\s+]/', '', $message['MessageUTC']);
                 $fields = $message['Payload']['Fields'];
@@ -123,10 +125,28 @@ class SatelitalController extends Controller
                     $mensaje->$filedName = $field['Value'];
                 }
             }
-            $tramaCoban = generarTramaCoban($mensaje);
+
             \Yii::info('Posición recibida...' .print_r($mensaje). "\n", 'satelital');
 
-            send_local($tramaCoban, $this->local_ip_forward, $this->local_port_forward, 'satelital');
+            list($imei, $gps) = self::findPatente($mensaje->mobileID);            
+            if(!is_null($imei)){
+                $mensaje->imei = $imei;
+                $tramaCoban = generarTramaCoban($mensaje);
+                send_local($tramaCoban, $this->local_ip_forward, $this->local_port_forward, 'satelital');
+            }else{
+                \Yii::info("No se encontro vehiculo con el Id $mensaje->mobileID..." ."\n", 'satelital');
+            }
+        }
+    }
+
+    private function findPatente($id_satelital = 0)
+    {
+        $connection = \Yii::$app->db;
+        $vehiculo = Vehiculo::findOne(['id_satelital' => $id_satelital]);
+        if ($vehiculo) {
+            return array($vehiculo->imei, $vehiculo->gps);
+        } else {
+            return null;
         }
     }
 
