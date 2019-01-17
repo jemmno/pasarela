@@ -145,7 +145,7 @@ class PasarelaController extends Controller
     public function handleDatagram($datagram)
     {
         try {
-            send_local($datagram, $this->local_ip_forward, $this->local_port_forward);
+            send_local($datagram, $this->local_ip_forward, $this->local_port_forward, 'pasarela');
             $tramaHawk = '';
             $imei = self::get_imei($datagram);
             if ($imei != '') {
