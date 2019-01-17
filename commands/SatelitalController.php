@@ -2,10 +2,10 @@
 
 namespace app\commands;
 
-use yii\console\Controller;
-use yii\httpclient\Client;
 use app\models\Config;
 use app\models\Vehiculo;
+use yii\console\Controller;
+use yii\httpclient\Client;
 
 // require "utils/trama_coban.php";
 // require "utils/sendUDP.php";
@@ -27,23 +27,23 @@ class SatelitalController extends Controller
 
     public function init()
     {
-    
+
         // conf client
         $this->client = new Client(['baseUrl' => 'http://isatdatapro.skywave.com/GLGW/GWServices_v1/RestMessages.svc']);
 
         try {
             $conf = Config::find()->one();
-            
+
             // local
             $this->local_port_forward = $conf->local_port_forward;
             $this->local_ip_forward = $conf->local_ip_forward;
-            
+
             // orbcomm credenciales
             $this->access = $conf->access_id;
             $this->password = $conf->password;
-                   
+
         } catch (\Throwable $th) {
-            die('No se pudo obtener config desde la base de datos! '.$th);
+            die('No se pudo obtener config desde la base de datos! ' . $th);
         }
         $this->credenciales = ['access_id' => $this->access, 'password' => $this->password];
 
@@ -72,7 +72,7 @@ class SatelitalController extends Controller
                     $horaUTC = self::getCurrentGatewayTime();
                 } else {
                     echo "No new messages received, at: " . date('d-m-Y H:i:s') . "\n";
-                    \Yii::info('Preguntando...' .date('d-m-Y H:i:s'). "\n", 'satelital');
+                    \Yii::info('Preguntando...' . date('d-m-Y H:i:s') . "\n", 'satelital');
                 }
             } else if ($this->result != null) {
                 echo "Error calling GetReturnMessages \n";
@@ -115,7 +115,7 @@ class SatelitalController extends Controller
 
         $messages = json_decode(json_encode($this->result['Messages']), true);
         print_r($messages);
-        $mensaje = new \stdClass(); 
+        $mensaje = new \stdClass();
         if (is_array($messages)) {
             foreach ($messages as $message) {
                 $imei = null;
@@ -126,17 +126,17 @@ class SatelitalController extends Controller
                     $filedName = $field['Name'];
                     $mensaje->$filedName = $field['Value'];
                 }
-            }
 
-            \Yii::info('Posición recibida...' .print_r($mensaje). "\n", 'satelital');
+                \Yii::info('Posición recibida...' . print_r($mensaje) . "\n", 'satelital');
 
-            list($imei, $gps) = self::findPatente($mensaje->mobileID);            
-            if(!is_null($imei)){
-                $mensaje->imei = $imei;
-                $tramaCoban = generarTramaCoban($mensaje);
-                send_local($tramaCoban, $this->local_ip_forward, $this->local_port_forward, 'satelital');
-            }else{
-                \Yii::info("No se encontro vehiculo con el Id $mensaje->mobileID..." ."\n", 'satelital');
+                list($imei, $gps) = self::findPatente($mensaje->mobileID);
+                if (!is_null($imei)) {
+                    $mensaje->imei = $imei;
+                    $tramaCoban = generarTramaCoban($mensaje);
+                    send_local($tramaCoban, $this->local_ip_forward, $this->local_port_forward, 'satelital');
+                } else {
+                    \Yii::info("No se encontro vehiculo con el Id $mensaje->mobileID..." . "\n", 'satelital');
+                }
             }
         }
     }
