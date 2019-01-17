@@ -58,6 +58,7 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             ['label' => 'Usuarios', 'url' => ['/user']],
+            ['label' => 'Configuración', 'url' => ['/config/view', 'id' => 1]],
             ['label' => 'Vehículos', 'url' => ['/vehiculo']],
             ['label' => 'Log', 'url' => ['/log-reader']]
         ] 

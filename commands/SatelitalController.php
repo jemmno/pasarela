@@ -2,9 +2,9 @@
 
 namespace app\commands;
 
-use codemix\yii2confload\Config;
 use yii\console\Controller;
 use yii\httpclient\Client;
+use app\models\Config;
 
 require "utils/trama_coban.php";
 require "utils/sendUDP.php";
@@ -18,21 +18,34 @@ class SatelitalController extends Controller
     // Delay between two consecutive GetMessages calls
     public $delayInSeconds = 32;
     public $result = '';
+    // conf reenvio local
+    public $local_ip_forward = '';
+    public $local_port_forward = '';
 
     public function init()
     {
-        $this->access = Config::env('ACCESS_ID');
-        $this->password = Config::env('PASSWORD');
-        $this->credenciales = ['access_id' => $this->access, 'password' => $this->password];
-
-        \Yii::info('Preguntando desde: ' . date('l jS \of F Y h:i:s A') . "\n", 'poller');
-
-        if (!$this->access || !$this->password) {
-            die('Debe setear access_id y password de orbcomm.');
-        }
-
+    
         // conf client
         $this->client = new Client(['baseUrl' => 'http://isatdatapro.skywave.com/GLGW/GWServices_v1/RestMessages.svc']);
+
+        try {
+            $conf = Config::find()->one();
+            
+            // local
+            $this->local_port_forward = $conf->local_port_forward;
+            $this->local_ip_forward = $conf->local_ip_forward;
+            
+            // orbcomm credenciales
+            $this->access = $conf->access_id;
+            $this->password = $conf->password;
+                   
+        } catch (\Throwable $th) {
+            die('No se pudo obtener config desde la base de datos! '.$th);
+        }
+        $this->credenciales = ['access_id' => $this->access, 'password' => $this->password];
+
+        \Yii::info('Preguntando desde: ' . date('l jS \of F Y h:i:s A') . "\n", 'satelital');
+
     }
 
     public function actionPreguntar()
@@ -84,7 +97,7 @@ class SatelitalController extends Controller
         $params = [];
         $params = $this->credenciales;
         $params['start_utc'] = $hora;
-        //print_r($params);
+        // print_r($params);
         $response = $this->client->get('get_return_messages.json', $params)->send();
         if ($response->isOk) {
             echo "mensaje recibido: " . json_encode($response->data) . "\n\n\n\n";
@@ -113,7 +126,7 @@ class SatelitalController extends Controller
             $tramaCoban = generarTramaCoban($mensaje);
             \Yii::info('Posición recibida...' .print_r($mensaje). "\n", 'satelital');
 
-            send_local($tramaCoban, 'satelital');
+            send_local($tramaCoban, $this->local_ip_forward, $this->local_port_forward, 'satelital');
         }
     }
 

@@ -19,15 +19,26 @@
  *
  */
 
-function generarTramaHawk($patente, $lat, $lng, $speed, $UTCDateTime)
+function generarTramaHawk($patente, $lat, $lng, $speed, $UTCDateTime, $direction, $ACC, $door, $dif_horaria)
 {
-    $fecha = formatFecha($UTCDateTime);
+    $fecha = formatFecha($UTCDateTime, $dif_horaria);
     $velocidad = millasNauticasAKmH($speed);
+    $ACC = IsNullOrEmptyString($ACC) ? '' : $ACC;
+    $door = IsNullOrEmptyString($door) ? '' : $door;
+    $evento = mapEvento($ACC, $door);
 
-    return $trama = "HAWK;ID=$patente;$lat;$lng;$velocidad;;$fecha;;1;;;;;";
+    return $trama = "HAWK;ID=$patente;$lat;$lng;$velocidad;$direction;$fecha;$ACC;1;$evento;;;;";
 }
 
-function formatFecha($UTCDateTime)
+function mapEvento($ACC, $door)
+{
+    $evento = '';
+    if($door == 1) { $evento = 11; }
+    if($door == 0) { $evento = 12; }
+    return $evento;
+}
+
+function formatFecha($UTCDateTime, $dif_horaria)
 {
     $input = $UTCDateTime; // 181017205423
     $year = (int) substr($input, 0, 2);
@@ -38,6 +49,7 @@ function formatFecha($UTCDateTime)
     $seg = (int) substr($input, 10, 2);
 
     $date_obj = new DateTime($year . '-' . $month . '-' . $date . ' ' . $hour . ':' . $minute . '.' . $seg);
+    $date_obj->modify($dif_horaria.' hour');
     return $date_obj->format('Y/m/d H:i.s');
 }
 

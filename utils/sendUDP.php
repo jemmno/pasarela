@@ -1,10 +1,8 @@
 <?php
 use codemix\yii2confload\Config;
 
-function send($trama)
+function send($trama, $server_ip, $server_port)
 {
-    $server_ip = Config::env('IP_FORWARD', '127.0.0.1');
-    $server_port = Config::env('PORT_FORWARD', '43278');
     print PHP_EOL."#################### envio hawk". PHP_EOL;
     
     if ($socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP)) {
@@ -18,10 +16,8 @@ function send($trama)
 }
 
 
-function send_local($trama, $origen)
+function send_local($trama, $server_ip, $server_port, $origen)
 {
-    $server_ip = Config::env('LOCAL_IP_FORWARD', '127.0.0.1');
-    $server_port = Config::env('LOCAL_PORT_FORWARD', '43278');
     print PHP_EOL."#################### envio local". PHP_EOL;
     
     if ($socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP)) {

@@ -19,7 +19,6 @@ $config = [
                 'Pasarela' => '@runtime/logs/pasarela.log',
                 'Satelital' => '@runtime/logs/satelital.log',
                 'Global' => '@runtime/logs/global.log',
-
             ],
         ],
     ],
