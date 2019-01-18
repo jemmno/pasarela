@@ -16,15 +16,15 @@
  * 303.36; This one is empty on my tracker. May be altitude ? feet or meters ?
  */
 
- //require "parser.php";
+ require "parser.php";
 
 function generarTramaCoban($mensaje)
 {
     // $fecha = formatFecha($UTCDateTime);
     // $velocidad = millasNauticasAKmH($speed);
     $imei = $mensaje->imei;
-    $lat = $mensaje->latitude;
-    $lng = $mensaje->longitude;
+    $lat = ($mensaje->latitude)/60000.0;
+    $lng = ($mensaje->longitude)/60000.0;
     $velocidad = $mensaje->speed;
     $fecha = $mensaje->messageUTC;
     $orientacion = $mensaje->heading;
@@ -34,23 +34,26 @@ function generarTramaCoban($mensaje)
 
 function convertDD2NMEAFormat($lat, $lng){
     $nmea = $nmelat = $nmealng = "";
-    $lata = abs((float)$lat/60000); //le quita el signo
+    $lata = abs((float)$lat); //le quita el signo
     $latd = intval($lata); //obtiene la parte entera del float
-    $latm = ($lata - $latd) * 60;
+    $latm = ($lata - $latd) * 60.0;
     $lath = $lat > 0 ? "N" : "S";
     
-    $lnga = abs((float)$lng/60000);
+    $lnga = abs((float)$lng);
+    //echo ("\n $lnga")."    ".($lnga*0.10);
     $lngd = intval($lnga);
-    $lngm = ($lnga - $lngd) * 60;
+    $lngm = ($lnga - $lngd) * 60.0;
     $lngh = $lng > 0 ? "E" : "W";
 
-    $nmelat = str_pad($latd,3,'0',STR_PAD_LEFT).number_format($latm, 5)  . ",". $lath;
-    $nmealng = (str_pad($lngd,3,'0',STR_PAD_LEFT).number_format($lngm, 5))/10 . "," . $lngh;
+    $lngd = str_pad($lngd,3,'0',STR_PAD_LEFT);
+
+    $nmelat = $latd.number_format($latm, 5)  . ",". $lath;
+    $nmealng = $lngd.number_format($lngm, 5) . "," . $lngh;
     $nmea = $nmelat.','.$nmealng;
 
     // prueba 
     convertToGoogleMapsFormat($latd.$latm, $lath, 'lat');
-    convertToGoogleMapsFormat((str_pad($lngd,3,'0',STR_PAD_LEFT).number_format($lngm, 5))/10, $lngh, 'lng');
+    convertToGoogleMapsFormat($lngd.$lngm, $lngh, 'lng');
 
     return $nmea;
 }

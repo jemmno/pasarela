@@ -111,7 +111,12 @@ class SatelitalController extends Controller
     private function procesarMessages($messages)
     {
         // prueba conversion DD a NMEA
-        //echo "\n -1516194,738; -3452910,114 ( -25,269.9123;-57,548.5019 ) coord convertida: ".convertDD2NMEAFormat('-1516194,738', '-3452910,114')."\n";
+        // $lat_prueba = -1534861;
+        // $lng_prueba = -3435132;
+        // $lat_prueba_decimales = $lat_prueba / 60000.0;
+        // $lng_prueba_decimales = $lng_prueba / 60000.0;
+        // echo "\n coord a convertir: $lat_prueba_decimales,$lng_prueba_decimales \n";
+        // echo "\n coord convertida: ".convertDD2NMEAFormat($lat_prueba_decimales, $lng_prueba_decimales)."\n";
 
         $messages = json_decode(json_encode($this->result['Messages']), true);
         print_r($messages);
