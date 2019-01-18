@@ -39,18 +39,18 @@ function convertDD2NMEAFormat($lat, $lng){
     $latm = ($lata - $latd) * 60;
     $lath = $lat > 0 ? "N" : "S";
     
-    $lnga = abs((float)$lng/6000);
+    $lnga = abs((float)$lng/60000);
     $lngd = intval($lnga);
     $lngm = ($lnga - $lngd) * 60;
     $lngh = $lng > 0 ? "E" : "W";
 
     $nmelat = str_pad($latd,3,'0',STR_PAD_LEFT).number_format($latm, 5)  . ",". $lath;
-    $nmealng = str_pad($lngd,3,'0',STR_PAD_LEFT).number_format($lngm, 5) . "," . $lngh;
+    $nmealng = (str_pad($lngd,3,'0',STR_PAD_LEFT).number_format($lngm, 5))/10 . "," . $lngh;
     $nmea = $nmelat.','.$nmealng;
 
     // prueba 
-    //convertToGoogleMapsFormat($latd.$latm, $lath, 'lat');
-    //convertToGoogleMapsFormat($lngd.$lngm, $lngh, 'lng');
+    convertToGoogleMapsFormat($latd.$latm, $lath, 'lat');
+    convertToGoogleMapsFormat((str_pad($lngd,3,'0',STR_PAD_LEFT).number_format($lngm, 5))/10, $lngh, 'lng');
 
     return $nmea;
 }
