@@ -29,7 +29,7 @@ function generarTramaCoban($mensaje)
     $fecha = $mensaje->messageUTC;
     $orientacion = $mensaje->heading;
     $latlng = convertDD2NMEAFormat($lat,$lng);
-    return $trama = "imei:$imei,tracker,$fecha,,F,,$latlng,$velocidad,$orientacion";
+    return $trama = "imei:$imei,tracker,$fecha,,F,,$latlng,$velocidad,$orientacion;";
 }
 
 function convertDD2NMEAFormat($lat, $lng){
