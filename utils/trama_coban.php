@@ -16,6 +16,8 @@
  * 303.36; This one is empty on my tracker. May be altitude ? feet or meters ?
  */
 
+ //require "parser.php";
+
 function generarTramaCoban($mensaje)
 {
     // $fecha = formatFecha($UTCDateTime);
@@ -37,14 +39,18 @@ function convertDD2NMEAFormat($lat, $lng){
     $latm = ($lata - $latd) * 60;
     $lath = $lat > 0 ? "N" : "S";
     
-    $lnga = abs((float)$lng/60000);
+    $lnga = abs((float)$lng/6000);
     $lngd = intval($lnga);
     $lngm = ($lnga - $lngd) * 60;
     $lngh = $lng > 0 ? "E" : "W";
 
-    $nmelat = round($latd.$latm * 10000.0) / 10000.0 . ",". $lath;
-    $nmealng = round($lngd.$lngm * 10000.0) / 10000.0 . "," . $lngh;
+    $nmelat = str_pad($latd,3,'0',STR_PAD_LEFT).number_format($latm, 5)  . ",". $lath;
+    $nmealng = str_pad($lngd,3,'0',STR_PAD_LEFT).number_format($lngm, 5) . "," . $lngh;
     $nmea = $nmelat.','.$nmealng;
+
+    // prueba 
+    //convertToGoogleMapsFormat($latd.$latm, $lath, 'lat');
+    //convertToGoogleMapsFormat($lngd.$lngm, $lngh, 'lng');
 
     return $nmea;
 }
