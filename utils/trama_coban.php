@@ -20,7 +20,7 @@
 
 function generarTramaCoban($mensaje)
 {
-    $current_time = date("His.u");
+    $current_time = date("His.v");
     
     echo "\n current time para la trama coban $current_time \n";
 
@@ -29,7 +29,7 @@ function generarTramaCoban($mensaje)
     $lng = ($mensaje->longitude)/60000.0;
     $velocidad = $mensaje->speed;
     $fecha = $mensaje->messageUTC;
-    $orientacion = $mensaje->heading;
+    $orientacion = $mensaje->heading*0.1;
     $latlng = convertDD2NMEAFormat($lat,$lng);
     return $trama = "imei:$imei,tracker,$fecha,,F,$current_time,A,$latlng,$velocidad,$orientacion;";
 }
