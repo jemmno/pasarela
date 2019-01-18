@@ -20,8 +20,10 @@
 
 function generarTramaCoban($mensaje)
 {
-    // $fecha = formatFecha($UTCDateTime);
-    // $velocidad = millasNauticasAKmH($speed);
+    $current_time = date("His.u");
+    
+    echo "\n current time para la trama coban $current_time \n";
+
     $imei = $mensaje->imei;
     $lat = ($mensaje->latitude)/60000.0;
     $lng = ($mensaje->longitude)/60000.0;
@@ -29,7 +31,7 @@ function generarTramaCoban($mensaje)
     $fecha = $mensaje->messageUTC;
     $orientacion = $mensaje->heading;
     $latlng = convertDD2NMEAFormat($lat,$lng);
-    return $trama = "imei:$imei,tracker,$fecha,,F,,$latlng,$velocidad,$orientacion;";
+    return $trama = "imei:$imei,tracker,$fecha,,F,$current_time,A,$latlng,$velocidad,$orientacion;";
 }
 
 function convertDD2NMEAFormat($lat, $lng){
