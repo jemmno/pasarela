@@ -42,8 +42,8 @@ function convertDD2NMEAFormat($lat, $lng){
     $lngm = ($lnga - $lngd) * 60;
     $lngh = $lng > 0 ? "E" : "W";
 
-    $nmelat = round($latd).$latm . ",". $lath;
-    $nmealng = round($lngd).$lngm . "," . $lngh;
+    $nmelat = round($latd.$latm * 10000.0) / 10000.0 . ",". $lath;
+    $nmealng = round($lngd.$lngm * 10000.0) / 10000.0 . "," . $lngh;
     $nmea = $nmelat.','.$nmealng;
 
     return $nmea;
