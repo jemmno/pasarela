@@ -28,6 +28,7 @@ function generarTramaCoban($mensaje)
     $fecha = new \DateTime( $mensaje->messageUTC , $UTC );
     $fecha->setTimezone( $newTZ );
     echo $fecha->format('ymdHis');  
+    $fecha_formateada = $fecha->format('ymdHis');
     
     $imei = $mensaje->imei;
     $lat = ($mensaje->latitude)/60000.0;
@@ -35,7 +36,7 @@ function generarTramaCoban($mensaje)
     $velocidad = $mensaje->speed;
     $orientacion = $mensaje->heading*0.1;
     $latlng = convertDD2NMEAFormat($lat,$lng);
-    return $trama = "imei:$imei,tracker,$fecha->format('ymdHis'),,F,$current_time,A,$latlng,$velocidad,$orientacion;";
+    return $trama = "imei:$imei,tracker,$fecha_formateada,,F,$current_time,A,$latlng,$velocidad,$orientacion;";
 }
 
 function convertDD2NMEAFormat($lat, $lng){
