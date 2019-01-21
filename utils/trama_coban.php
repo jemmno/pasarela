@@ -20,22 +20,21 @@
 
 function generarTramaCoban($mensaje)
 {
-    $current_time = date("His.v", time());
-    echo "\n current time para la trama coban $current_time \n";
     $UTC = new \DateTimeZone("UTC");
     $fecha = new \DateTime( $mensaje->messageUTC , $UTC );
     //$newTZ = new \DateTimeZone("America/Asuncion");
     //$fecha->setTimezone( $newTZ );
     echo $fecha->format(' fecha recibida ymdHis');  
     $fecha_formateada = $fecha->format('ymdHis');
-    
+    $hora_formateada = $fecha->format('His.v');
+    echo "\n current time para la trama coban $hora_formateada \n";   
     $imei = $mensaje->imei;
     $lat = ($mensaje->latitude)/60000.0;
     $lng = ($mensaje->longitude)/60000.0;
     $velocidad = $mensaje->speed;
     $orientacion = $mensaje->heading*0.1;
     $latlng = convertDD2NMEAFormat($lat,$lng);
-    return $trama = "imei:$imei,tracker,$fecha_formateada,,F,$current_time,A,$latlng,$velocidad,$orientacion;";
+    return $trama = "imei:$imei,tracker,$fecha_formateada,,F,$hora_formateada,A,$latlng,$velocidad,$orientacion;";
 }
 
 function convertDD2NMEAFormat($lat, $lng){
