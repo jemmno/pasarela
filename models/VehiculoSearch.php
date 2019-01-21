@@ -61,6 +61,7 @@ class VehiculoSearch extends Vehiculo
         $query->andFilterWhere([
             'id' => $this->id,
             'imei' => $this->imei,
+            'gps' => $this->gps,
         ]);
 
         $query->andFilterWhere(['like', 'patente', $this->patente])
