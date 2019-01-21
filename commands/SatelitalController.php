@@ -131,8 +131,8 @@ class SatelitalController extends Controller
                     $filedName = $field['Name'];
                     $mensaje->$filedName = $field['Value'];
                 }
-
-                \Yii::info('Posición recibida...' . print_r($mensaje) . "\n", 'satelital');
+                $message_to_log = print_r($message, true);
+                \Yii::info("Posición recibida: $message_to_log", 'satelital');
 
                 list($imei, $gps) = self::findPatente($mensaje->mobileID);
                 if (!is_null($imei)) {
