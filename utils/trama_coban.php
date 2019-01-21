@@ -22,11 +22,11 @@ function generarTramaCoban($mensaje)
 {
     $current_time = date("His.v", time());
     echo "\n current time para la trama coban $current_time \n";
-    
+    echo "\n current date time"
     $UTC = new \DateTimeZone("UTC");
-    $newTZ = new \DateTimeZone("America/Asuncion");
     $fecha = new \DateTime( $mensaje->messageUTC , $UTC );
-    $fecha->setTimezone( $newTZ );
+    //$newTZ = new \DateTimeZone("America/Asuncion");
+    //$fecha->setTimezone( $newTZ );
     echo $fecha->format('ymdHis');  
     $fecha_formateada = $fecha->format('ymdHis');
     
