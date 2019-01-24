@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php if (Yii::$app->user->identity->user_level == 'Admin') { ?>
         <p>
-            <?= Html::a('Create Vehiculo', ['create'], ['class' => 'btn btn-success']) ?>
+            <?= Html::a('Crear Vehículo', ['create'], ['class' => 'btn btn-success']) ?>
         </p>
     <?php } ?>
 

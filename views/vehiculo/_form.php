@@ -14,7 +14,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'patente')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'imei')->textInput()->hint('En caso de ser rastreador satelital, ingrese aqui su id, reemplazando las letras por 9. Ej: 123SKY123 => 123999123') ?>
+    <?= $form->field($model, 'imei')->textInput()->hint('En caso de ser rastreador skywave, ingrese aqui su id, reemplazando las letras por 9. Ej: 123SKY123 => 123999123') ?>
 
     <?= $form->field($model, 'descripcion')->textarea(['rows' => 6]) ?>
 
@@ -22,10 +22,10 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'gps')->dropDownList($var, ['prompt' => 'Seleccione modelo GPS' ]); ?>
 
-    <?= $form->field($model, 'id_satelital')->textInput()->hint('Id en caso de ser rastreador satelital') ?>
+    <?= $form->field($model, 'id_satelital')->textInput()->hint('Id en caso de ser rastreador skywave') ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
