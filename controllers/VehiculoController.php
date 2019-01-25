@@ -2,12 +2,12 @@
 
 namespace app\controllers;
 
-use Yii;
 use app\models\Vehiculo;
 use app\models\VehiculoSearch;
+use Yii;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * VehiculoController implements the CRUD actions for Vehiculo model.
@@ -24,6 +24,18 @@ class VehiculoController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                ],
+            ],
+            'access' => [
+                'class' => \yii\filters\AccessControl::className(),
+                'only' => ['index', 'create', 'update', 'view'],
+                'rules' => [
+                    // allow authenticated users
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                    // everything else is denied
                 ],
             ],
         ];
@@ -124,4 +136,5 @@ class VehiculoController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
 }
