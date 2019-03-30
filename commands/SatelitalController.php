@@ -71,7 +71,7 @@ class SatelitalController extends Controller
                     // call will return the same messages you already get
                     $horaUTC = self::getCurrentGatewayTime();
                 } else {
-                    echo "No new messages received, at: " . date('d-m-Y H:i:s') . "\n";
+                    echo "\n No new messages received, at: " . date('d-m-Y H:i:s') . "\n";
                     \Yii::info('Preguntando...' . date('d-m-Y H:i:s') . "\n", 'satelital');
                 }
             } else if ($this->result != null) {
@@ -110,9 +110,9 @@ class SatelitalController extends Controller
 
     private function procesarMessages($messages)
     {
-        // prueba conversion DD a NMEA
-        // $lat_prueba = -1534861;
-        // $lng_prueba = -3435132;
+        //prueba conversion DD a NMEA
+        // $lat_prueba = -1569318;
+        // $lng_prueba = -3433399;
         // $lat_prueba_decimales = $lat_prueba / 60000.0;
         // $lng_prueba_decimales = $lng_prueba / 60000.0;
         // echo "\n coord a convertir: $lat_prueba_decimales,$lng_prueba_decimales \n";
@@ -125,6 +125,7 @@ class SatelitalController extends Controller
             foreach ($messages as $message) {
                 $imei = null;
                 $mensaje->mobileID = $message['MobileID'];
+                $mensaje->name = $message['Payload']['Name'];
                 $mensaje->messageUTC = preg_replace('/[\-\:\s+]/', '', $message['MessageUTC']);
                 $fields = $message['Payload']['Fields'];
                 foreach ($fields as $field) {
@@ -134,13 +135,16 @@ class SatelitalController extends Controller
                 $message_to_log = print_r($message, true);
                 \Yii::info("Posición recibida: $message_to_log", 'satelital');
 
-                list($imei, $gps) = self::findPatente($mensaje->mobileID);
-                if (!is_null($imei)) {
-                    $mensaje->imei = $imei;
-                    $tramaCoban = generarTramaCoban($mensaje);
-                    send_local($tramaCoban, $this->local_ip_forward, $this->local_port_forward, 'satelital');
-                } else {
-                    \Yii::info("No se encontro vehiculo con el Id $mensaje->mobileID..." . "\n", 'satelital');
+                if($mensaje->name =='Stationary' || $mensaje->name =='Moving'){
+                    echo "\n Tipo de payload: $mensaje->name";
+                    list($imei, $gps) = self::findPatente($mensaje->mobileID);
+                    if (!is_null($imei)) {
+                        $mensaje->imei = $imei;
+                        $tramaCoban = generarTramaCoban($mensaje);
+                        send_local($tramaCoban, $this->local_ip_forward, $this->local_port_forward, 'satelital');
+                    } else {
+                        \Yii::info("No se encontro vehiculo con el Id $mensaje->mobileID..." . "\n", 'satelital');
+                    }
                 }
             }
         }
