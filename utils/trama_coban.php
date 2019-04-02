@@ -57,7 +57,11 @@ function convertDD2NMEAFormat($lat, $lng){
     }else{
         $nmelat = $latd.number_format($latm, 5)  . ",". $lath;
     }
-    $nmealng = $lngd.number_format($lngm, 5) . "," . $lngh;
+    if (strlen(intval($lngm)) == 1) {
+        $nmealng = $lngd."0".number_format($lngm, 5) . "," . $lngh;
+    }else{
+        $nmealng = $lngd.number_format($lngm, 5) . "," . $lngh;
+    }
     $nmea = $nmelat.','.$nmealng;
 
     // prueba 
