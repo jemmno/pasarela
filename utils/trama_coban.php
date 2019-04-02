@@ -52,7 +52,7 @@ function convertDD2NMEAFormat($lat, $lng){
 
     $lngd = str_pad($lngd,3,'0',STR_PAD_LEFT);
 
-    if (strlen(intval($$latm)) == 1) {
+    if (strlen(intval($latm)) == 1) {
         $nmelat = $latd."0".number_format($latm, 5)  . ",". $lath;
     }else{
         $nmelat = $latd.number_format($latm, 5)  . ",". $lath;
