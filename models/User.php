@@ -31,7 +31,7 @@ public static function findIdentity($id) {
                 "id" => $id
             ])
             ->one();
-    if (!count($user)) {
+    if (!is_object($user)) {
         return null;
     }
     return new static($user);
@@ -45,7 +45,7 @@ public static function findIdentityByAccessToken($token, $userType = null) {
     $user = self::find()
             ->where(["accessToken" => $token])
             ->one();
-    if (!count($user)) {
+    if (!is_object($user)) {
         return null;
     }
     return new static($user);
@@ -63,7 +63,7 @@ public static function findByUsername($username) {
                 "username" => $username
             ])
             ->one();
-    if (!count($user)) {
+    if (!is_object($user)) {
         return null;
     }
     return new static($user);
@@ -75,7 +75,7 @@ public static function findByUser($username) {
                 "username" => $username
             ])
             ->one();
-    if (!count($user)) {
+    if (!is_object($user)) {
         return null;
     }
     return $user;
