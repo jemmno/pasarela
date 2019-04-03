@@ -31,10 +31,8 @@ function generarTramaCoban($mensaje)
     $imei = $mensaje->imei;
     $lat = ($mensaje->latitude)/60000.0;
     $lng = ($mensaje->longitude)/60000.0;
-    $velocidad = 0; 
-    if($mensaje->name =='Moving'){
-        $velocidad = ($mensaje->speed)/1.852;
-    }
+    echo "\n tipo de posicion $mensaje->name \n";   
+    $velocidad = ($mensaje->speed)/1.852;
     $orientacion = $mensaje->heading*0.1;
     $latlng = convertDD2NMEAFormat($lat,$lng);
     return $trama = "imei:$imei,tracker,$fecha_formateada,,F,$hora_formateada,A,$latlng,$velocidad,$orientacion;";
