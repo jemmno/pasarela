@@ -20,6 +20,8 @@ class SatelitalController extends Controller
     public $credenciales = [];
     // Delay between two consecutive GetMessages calls
     public $delayInSeconds = 32;
+    // Delay between every datagram 
+    public $delaySendDatagram = 0.5;
     public $result = '';
     // conf reenvio local
     public $local_ip_forward = '';
@@ -146,6 +148,7 @@ class SatelitalController extends Controller
                         \Yii::info("No se encontro vehiculo con el Id $mensaje->mobileID..." . "\n", 'satelital');
                     }
                 }
+                sleep($this->delaySendDatagram);
             }
         }
     }
