@@ -32,7 +32,9 @@ function generarTramaCoban($mensaje)
     $lat = ($mensaje->latitude)/60000.0;
     $lng = ($mensaje->longitude)/60000.0;
     echo "\n tipo de posicion $mensaje->name \n";   
-    $velocidad = ($mensaje->speed)/1.852;
+    // se debe dividir entre 5.4 para pasar a km/h
+    // se divide entre 1.852 para pasar de km/h a notch. 
+    $velocidad = (($mensaje->speed)/5.4)/1.852; 
     $orientacion = $mensaje->heading*0.1;
     $latlng = convertDD2NMEAFormat($lat,$lng);
     return $trama = "imei:$imei,tracker,$fecha_formateada,,F,$hora_formateada,A,$latlng,$velocidad,$orientacion;";
