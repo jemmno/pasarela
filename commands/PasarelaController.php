@@ -13,12 +13,12 @@ use yii\console\Controller;
 use yii\base\ErrorException;
 use \Exception;
 
-require "/var/www/pasarela/utils/parser.php";
-require "/var/www/pasarela/utils/trama_hawk.php";
-require "/var/www/pasarela/utils/sendUDP.php";
-// require "utils/parser.php";
-// require "utils/trama_hawk.php";
-// require "utils/sendUDP.php";
+//require "/var/www/pasarela/utils/parser.php";
+//require "/var/www/pasarela/utils/trama_hawk.php";
+//require "/var/www/pasarela/utils/sendUDP.php";
+require "utils/parser.php";
+require "utils/trama_hawk.php";
+require "utils/sendUDP.php";
 
 
 /**
